@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+
 export const style = StyleSheet.create({
     teste:{
         flex:1
@@ -28,12 +29,12 @@ export const style = StyleSheet.create({
         alignItems: 'flex-start',
         fontSize: 52,
         color: 'white',
-        fontFamily:'Helvetica-Light',
+        fontFamily:'Helvetica-Bold',
         marginBottom: 35
     },
     input:{
         marginTop: 20,
-        borderRadius: 10
+        borderRadius: 7
     },
     esqueceuSenha:{
         padding: 7,

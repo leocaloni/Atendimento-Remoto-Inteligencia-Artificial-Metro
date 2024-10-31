@@ -1,11 +1,17 @@
-import {useState} from 'react';
-import {View, KeyboardAvoidingView, Image, TouchableOpacity, Text, Platform, ScrollView, Dimensions} from 'react-native';
+import { useState } from 'react';
+import { View, KeyboardAvoidingView, Image, TouchableOpacity, Text, ScrollView, Dimensions } from 'react-native';
 import { style } from '../styles/styles';
 import { StatusBar } from 'expo-status-bar';
 import { TextInput, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes';
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function App(){
     const [usuario, setUsuario] = useState("");
+    const navigation = useNavigation<LoginScreenNavigationProp>();
     const screenHeight = Dimensions.get('window').height;
     return (
     <KeyboardAvoidingView style= {style.teste}>
@@ -29,7 +35,7 @@ export default function App(){
                     onChangeText={text => setUsuario(text)}
                 />
                 <TextInput style={style.input}
-                    label="Password"
+                    label="Senha"
                     secureTextEntry
                     right={<TextInput.Icon icon="eye" />}
                     />
@@ -38,7 +44,7 @@ export default function App(){
                         Esqueceu sua senha?
                     </Text>
                 </TouchableOpacity>
-                <Button mode="contained" onPress={() => console.log('Pressed')} style = {style.botao}>
+                <Button mode="contained" onPress={() => navigation.navigate('Cadastro')} style = {style.botao}>
                     Entrar
                 </Button>
             </View>
