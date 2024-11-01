@@ -12,18 +12,19 @@ export default function App(){
     const [gratuidade, setGratuidade] = useState("");
     const screenHeight = Dimensions.get('window').height;
     return (
-    <KeyboardAvoidingView style= {style.teste}>
+    <KeyboardAvoidingView style= {style.teste}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <StatusBar style="light" />
-        <ScrollView contentContainerStyle={{ flexGrow: 1, height:screenHeight }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style = {style.teste1}>
-        <Image style={style.image}
+        <Image style={[style.image, {marginBottom:10, marginTop:10}]}
                 source={require('../../assets/logo2.png')}
         />
         </View>
         <View style={style.background}>
             <View style = {style.container}>
                 <View>
-                    <Text style={style.textoLogin}>
+                    <Text style={style.textoCadastro}>
                         Cadastro
                     </Text>
                 </View>

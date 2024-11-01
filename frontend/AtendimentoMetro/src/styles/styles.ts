@@ -1,4 +1,8 @@
+import { Dimensions } from "react-native";
 import { StyleSheet } from "react-native";
+
+
+const { width } = Dimensions.get('window');
 
 export const style = StyleSheet.create({
     teste:{
@@ -29,7 +33,7 @@ export const style = StyleSheet.create({
         alignItems: 'flex-start',
         fontSize: 52,
         color: 'white',
-        fontFamily:'Helvetica-Bold',
+        fontFamily:'Helvetica-Regular',
         marginBottom: 35
     },
     input:{
@@ -45,5 +49,14 @@ export const style = StyleSheet.create({
     },
     botao:{
         backgroundColor:"#1027AF",
+    },
+    textoCadastro: {
+        fontSize: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontFamily:'Helvetica-Regular',
+        
+        
     },
 })
