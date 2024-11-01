@@ -3,7 +3,6 @@ import gridfs
 import io
 import face_recognition as fr
 from PIL import Image
-
 # Conexão com o MongoDB
 connection_string = "mongodb://localhost:27017"
 client = MongoClient(connection_string)
@@ -13,11 +12,11 @@ fs = gridfs.GridFS(db_connection)
 
 class Passageiro:
     
-    def __init__(self, nome, rg, cpf, data_nascimento):
+    def __init__(self, nome, cpf, gratuidade, data_nascimento):
         self.nome = nome
-        self.rg = rg
         self.cpf = cpf
         self.data_nascimento = data_nascimento
+        self.gratuidate = gratuidade
         self.foto_id = None
 
     def cadastrarPassageiro(self, caminho_foto):
@@ -27,8 +26,8 @@ class Passageiro:
 
             passageiro_id = passageiro_collection.insert_one({
                 "nome": self.nome,
-                "rg": self.rg,
                 "cpf": self.cpf,
+                "gratuidade": self.gratuidate,
                 "data_nascimento": self.data_nascimento,
                 "foto_id": self.foto_id
             }).inserted_id
@@ -59,6 +58,7 @@ class Passageiro:
                 {"cpf": cpf},
                 {"$set": novos_dados}
             )
+            print(f"Os dados foram atualizados")
             return resultado.modified_count > 0
         except Exception as e:
             print(f"Erro ao atualizar passageiro: {e}")
@@ -68,6 +68,7 @@ class Passageiro:
     def deletarPassageiro(cpf):
         try:
             resultado = passageiro_collection.delete_one({"cpf": cpf})
+            print("Passageiro deletado")
             return resultado.deleted_count > 0
         except Exception as e:
             print(f"Erro ao deletar passageiro: {e}")
@@ -84,7 +85,7 @@ class Passageiro:
             print(f"Erro ao obter foto: {e}")
             return None
 
-# Função para obter codificações faciais
+# Função para obter codificações faciais (função fora da classe passageiro)
 def obter_codificacoes_faces():
     try:
         passageiros = passageiro_collection.find()
