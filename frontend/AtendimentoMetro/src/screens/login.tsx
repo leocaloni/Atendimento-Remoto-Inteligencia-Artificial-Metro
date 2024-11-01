@@ -9,66 +9,67 @@ import { RootStackParamList } from '../routes';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
-export default function App(){
+export default function App() {
     const [usuario, setUsuario] = useState("");
+    const [senha, setSenha] = useState("");
     const navigation = useNavigation<LoginScreenNavigationProp>();
+    const toggleShowSenha = () => {
+        setShowSenha(!showSenha); // Inverte o estado da visibilidade da senha
+    };
     const screenHeight = Dimensions.get('window').height;
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-            console.log('Teclado mostrado');
-        });
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            console.log('Teclado escondido');
-        });
+    const [showSenha, setShowSenha] = useState(false);
 
-        // Limpeza ao desmontar
-        return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
-        };
-    }, []);
-    
     return (
         <KeyboardAvoidingView 
-        style={style.teste}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 50}
-    >
-        <StatusBar style="light" />
-        <ScrollView contentContainerStyle={{ flexGrow: 1, height:screenHeight }}>
-        <View style = {style.teste1}>
-        <Image style={style.image}
-                source={require('../../assets/logo2.png')}
-        />
-        </View>
-        <View style={style.background}>
-            <View style = {style.container}>
-                <View>
-                    <Text style={style.textoLogin}>
-                        Login
-                    </Text>
+            style={style.teste}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} 
+        >
+            <StatusBar style="light" />
+            <ScrollView 
+                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} 
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <View style={style.teste1}>
+                    <Image style={style.image} source={require('../../assets/logo2.png')} />
                 </View>
-                <TextInput style={style.input}
-                    label="Usuário"
-                    value={usuario}
-                    onChangeText={text => setUsuario(text)}
-                />
-                <TextInput style={style.input}
-                    label="Senha"
-                    secureTextEntry
-                    right={<TextInput.Icon icon="eye" />}
-                    />
-                <TouchableOpacity>
-                    <Text style={style.esqueceuSenha}>
-                        Esqueceu sua senha?
-                    </Text>
-                </TouchableOpacity>
-                <Button mode="contained" onPress={() => navigation.navigate('Cadastro')} style = {style.botao}>
-                    Entrar
-                </Button>
-            </View>
-        </View>
-    </ScrollView>
+                <View style={style.background}>
+                    <View style={style.container}>
+                        <Text style={style.textoLogin}>
+                            Login
+                        </Text>
+                        <TextInput 
+                            style={style.input}
+                            label="Usuário"
+                            value={usuario}
+                            onChangeText={text => setUsuario(text)}
+                            
+                        />
+                        <TextInput 
+                            style={style.input}
+                            label="Senha"
+                            secureTextEntry={!showSenha}
+                            value={senha}
+                            onChangeText={text => setSenha(text)}
+                            right={
+                                <TextInput.Icon 
+                                    icon={showSenha ? "eye-off" : "eye"}
+                                    onPress={toggleShowSenha}
+                                />
+                            }
+                        />
+                        <TouchableOpacity>
+                            <Text style={style.esqueceuSenha}>
+                                Esqueceu sua senha?
+                            </Text>
+                        </TouchableOpacity>
+                        <Button mode="contained" onPress={() => navigation.navigate('Cadastro')} style={style.botao}>
+                            Entrar
+                        </Button>
+                    </View>
+                </View>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 }

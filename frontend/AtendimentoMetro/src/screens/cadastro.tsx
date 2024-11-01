@@ -13,9 +13,15 @@ export default function App(){
     const screenHeight = Dimensions.get('window').height;
     return (
     <KeyboardAvoidingView style= {style.teste}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+    >
         <StatusBar style="light" />
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView 
+                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} 
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+        >
         <View style = {style.teste1}>
         <Image style={[style.image, {marginBottom:10, marginTop:10}]}
                 source={require('../../assets/logo2.png')}
