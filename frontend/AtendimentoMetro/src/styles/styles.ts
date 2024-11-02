@@ -45,7 +45,7 @@ export const style = StyleSheet.create({
         marginBottom: 15,
         color: 'white',
         textDecorationLine: 'underline',
-        fontFamily:'Helvetica-Light'
+        fontFamily:'Helvetica-Regular'
     },
     botao:{
         backgroundColor:"#1027AF",
