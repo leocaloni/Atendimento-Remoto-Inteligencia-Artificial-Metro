@@ -14,7 +14,7 @@ export default function App() {
     const [senha, setSenha] = useState("");
     const navigation = useNavigation<LoginScreenNavigationProp>();
     const toggleShowSenha = () => {
-        setShowSenha(!showSenha); // Inverte o estado da visibilidade da senha
+        setShowSenha(!showSenha);
     };
     const screenHeight = Dimensions.get('window').height;
     const [showSenha, setShowSenha] = useState(false);

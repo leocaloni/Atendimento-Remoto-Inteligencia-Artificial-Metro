@@ -4,6 +4,7 @@ import { style } from '../styles/styles';
 import { StatusBar } from 'expo-status-bar';
 import { TextInput, Button, TouchableRipple } from 'react-native-paper';
 import Entypo from '@expo/vector-icons/Entypo';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function App(){
     const [nome, setNome] = useState("");
@@ -34,6 +35,14 @@ export default function App(){
                         Cadastro
                     </Text>
                 </View>
+                <View style={{backgroundColor:"#1027AF", width:65,height:65, alignSelf:"flex-end", borderRadius:10, bottom:61, end:60}}>
+                <TouchableRipple style={{width:65,height:65}}
+                    onPress={() => console.log('Pressed')}
+                    rippleColor="rgba(0, 0, 0, .32)"
+                >
+                    <Ionicons name="exit-sharp" size={24} color="white" style={{top: 20, alignSelf:"center", flex:1,}} />
+                </TouchableRipple>
+                </View>
                 <TextInput style={style.input}
                     label="Nome"
                     value={nome}
@@ -59,7 +68,7 @@ export default function App(){
                     onPress={() => console.log('Pressed')}
                     rippleColor="rgba(0, 0, 0, .32)"
                 >
-                    <Entypo name="camera" size={60} color="black"/>
+                    <Entypo name="camera" size={60} color="white"/>
                     
                 </TouchableRipple>
                 </View>
