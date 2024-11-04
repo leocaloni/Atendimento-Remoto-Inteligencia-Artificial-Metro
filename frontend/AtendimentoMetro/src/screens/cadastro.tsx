@@ -35,7 +35,7 @@ export default function App(){
                         Cadastro
                     </Text>
                 </View>
-                <View style={{backgroundColor:"#1027AF", width:65,height:65, alignSelf:"flex-end", borderRadius:10, bottom:61, end:60}}>
+                <View style={{backgroundColor:"#1027AF", width:65,height:65, alignSelf:"flex-end", borderRadius:10, flexDirection: 'row'}}>
                 <TouchableRipple style={{width:65,height:65}}
                     onPress={() => console.log('Pressed')}
                     rippleColor="rgba(0, 0, 0, .32)"

@@ -56,7 +56,7 @@ export const style = StyleSheet.create({
         justifyContent: 'center',
         color: 'white',
         fontFamily:'Helvetica-Regular',
-        
+        padding:0
         
     },
 })
