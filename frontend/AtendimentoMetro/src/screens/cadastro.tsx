@@ -5,14 +5,34 @@ import { StatusBar } from 'expo-status-bar';
 import { TextInput, Button, TouchableRipple } from 'react-native-paper';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function App(){
+type RootStackParamList = {
+    Login: undefined;
+    Cadastro: undefined;
+    Camera: undefined;
+};
+
+type CadastroScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    'Cadastro'
+>;
+
+interface CadastroProps {
+    navigation: CadastroScreenNavigationProp;
+}
+
+export default function Cadastro({navigation}:CadastroProps){
     const [nome, setNome] = useState("");
     const [cpf, setCPF] = useState("");
     const [nascimento, setNascimento] = useState("");
     const [gratuidade, setGratuidade] = useState("");
     const screenHeight = Dimensions.get('window').height;
     return (
+    <SafeAreaView edges={['top']} style={{flex:1}}>
     <KeyboardAvoidingView style= {style.teste}
     behavior={Platform.OS === "ios" ? "padding" : "height"}
     keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
@@ -65,7 +85,7 @@ export default function App(){
                 />
                 <View style={{height:150, width:350, backgroundColor:'#1027AF', alignSelf: 'center',marginBottom: 30, marginTop: 30, borderRadius: 15}}>
                 <TouchableRipple style={{flex:1, justifyContent: 'center', alignItems: 'center'}}
-                    onPress={() => console.log('Pressed')}
+                    onPress={() => navigation.navigate('Camera')}
                     rippleColor="rgba(0, 0, 0, .32)"
                 >
                     <Entypo name="camera" size={60} color="white"/>
@@ -77,13 +97,14 @@ export default function App(){
                     Tire a foto do seu rosto olhando a para a câmera, de preferência em um fundo branco 
                     </Text>
                 </View>
-                <Button mode="contained" onPress={() => console.log('pressed')} style = {style.botao}>
+                <Button mode="contained" onPress={() => console.log('Pressed') } style = {style.botao}>
                     Cadastrar
                 </Button>
 
             </View>
         </View>
     </ScrollView>
-        </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
+    </SafeAreaView>
     );
 }

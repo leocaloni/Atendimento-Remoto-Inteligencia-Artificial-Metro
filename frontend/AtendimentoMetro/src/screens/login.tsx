@@ -5,14 +5,27 @@ import { StatusBar } from 'expo-status-bar';
 import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes';
+import { StackNavigationProp } from "@react-navigation/stack";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type RootStackParamList = {
+    Login: undefined;
+    Cadastro: undefined;
+    Camera: undefined;
+};
 
-export default function App() {
+type LoginScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    'Login'
+>;
+
+interface LoginProps {
+    navigation: LoginScreenNavigationProp;
+}
+
+export default function Login({navigation}:LoginProps) {
     const [usuario, setUsuario] = useState("");
     const [senha, setSenha] = useState("");
-    const navigation = useNavigation<LoginScreenNavigationProp>();
     const toggleShowSenha = () => {
         setShowSenha(!showSenha);
     };
@@ -20,6 +33,7 @@ export default function App() {
     const [showSenha, setShowSenha] = useState(false);
 
     return (
+        <SafeAreaView edges={['top']} style={{flex:1}}>
         <KeyboardAvoidingView
             style={style.teste}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -71,5 +85,6 @@ export default function App() {
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }

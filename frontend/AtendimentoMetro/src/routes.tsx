@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/login';
 import Cadastro from './screens/cadastro';
+import Camera from './screens/camera'
 
 export type RootStackParamList = {
   Login: undefined;
@@ -14,6 +15,7 @@ export default function MyStack() {
     <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen name="Login" component={Login} options={{headerShown:false}} />
       <Stack.Screen name="Cadastro" component={Cadastro} options={{headerShown:false}} />
+      <Stack.Screen name="Camera" component={Camera} options={{headerShown:false}} />
     </Stack.Navigator>
   );
 }
