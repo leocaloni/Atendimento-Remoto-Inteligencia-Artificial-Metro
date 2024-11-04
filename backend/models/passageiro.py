@@ -165,8 +165,3 @@ def get_photo(cpf):
             return jsonify({"msg": "Erro ao obter foto"}), 500
     else:
         return jsonify({"msg": "Foto não encontrada para o passageiro"}), 404
-
-if __name__ == "__main__":
-
-    pasageiro = Passageiro("teste", "123456789", "teste", "10/10/100")
-    pasageiro.cadastrarPassageiro('backend\images\WIN_20241104_14_45_00_Pro.jpg')

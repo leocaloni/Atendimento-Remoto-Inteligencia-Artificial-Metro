@@ -29,7 +29,7 @@ def reconhece_face():
                 break
 
             # Processa apenas a cada 20 frames para reduzir o uso de CPU
-            if process_frame % 20 == 0:
+            if process_frame % 40 == 0:
                 rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 face_locations = fr.face_locations(rgb_frame, model='hog')
                 face_encodings = fr.face_encodings(rgb_frame, face_locations)
