@@ -1,9 +1,6 @@
+import base64
 from pymongo import MongoClient
-import gridfs
-import io
-import face_recognition as fr
-from PIL import Image
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
 from bson.json_util import dumps
 
 app = Flask(__name__)
@@ -13,36 +10,30 @@ connection_string = "mongodb://localhost:27017"
 client = MongoClient(connection_string)
 db_connection = client["testeBanco"]
 passageiro_collection = db_connection.get_collection("testeCollection")
-fs = gridfs.GridFS(db_connection)
 
 class Passageiro:
     
-    def __init__(self, nome, cpf, gratuidade, data_nascimento):
+    def __init__(self, nome, cpf, gratuidade, data_nascimento, foto_base64):
         self.nome = nome
         self.cpf = cpf
         self.data_nascimento = data_nascimento
         self.gratuidate = gratuidade
-        self.foto_id = None
+        self.foto_base64 = foto_base64
 
-    def cadastrarPassageiro(self, caminho_foto):
+    def cadastrarPassageiro(self):
         try:
-            with open(caminho_foto, 'rb') as arquivo_foto:
-                self.foto_id = fs.put(arquivo_foto, filename=caminho_foto.split('/')[-1])
-
+            # Inserir dados do passageiro no MongoDB
             passageiro_id = passageiro_collection.insert_one({
                 "nome": self.nome,
                 "cpf": self.cpf,
                 "gratuidade": self.gratuidate,
                 "data_nascimento": self.data_nascimento,
-                "foto_id": self.foto_id
+                "foto_base64": self.foto_base64
             }).inserted_id
 
             print(f"Passageiro cadastrado com sucesso! ID: {passageiro_id}")
             return str(passageiro_id)
 
-        except FileNotFoundError:
-            print(f"Arquivo de foto não encontrado: {caminho_foto}")
-            return None
         except Exception as e:
             print(f"Erro ao cadastrar passageiro: {e}")
             return None
@@ -57,60 +48,17 @@ class Passageiro:
             return None
 
     @staticmethod
-    def atualizarPassageiro(cpf, novos_dados):
-        try:
-            resultado = passageiro_collection.update_one(
-                {"cpf": cpf},
-                {"$set": novos_dados}
-            )
-            print(f"Os dados foram atualizados")
-            return resultado.modified_count > 0
-        except Exception as e:
-            print(f"Erro ao atualizar passageiro: {e}")
-            return False
-
-    @staticmethod
-    def deletarPassageiro(cpf):
-        try:
-            resultado = passageiro_collection.delete_one({"cpf": cpf})
-            print("Passageiro deletado")
-            return resultado.deleted_count > 0
-        except Exception as e:
-            print(f"Erro ao deletar passageiro: {e}")
-            return False
-
-    @staticmethod
-    def obterFoto(cpf):
+    def obterFotoBase64(cpf):
         try:
             passageiro = passageiro_collection.find_one({"cpf": cpf})
-            if passageiro and 'foto_id' in passageiro:
-                foto_id = passageiro['foto_id']
-                foto_binaria = fs.get(foto_id).read()
-                return io.BytesIO(foto_binaria)
+            if passageiro and 'foto_base64' in passageiro:
+                return passageiro['foto_base64']
             return None
         except Exception as e:
             print(f"Erro ao obter foto: {e}")
             return None
 
-
-# Função para obter codificações faciais (função fora da classe passageiro)
-def obter_codificacoes_faces():
-    try:
-        passageiros = passageiro_collection.find()
-        codificacoes = []
-        for passageiro in passageiros:
-            foto_binaria = fs.get(passageiro['foto_id']).read()
-            imagem = fr.load_image_file(io.BytesIO(foto_binaria))
-            codificacao = fr.face_encodings(imagem)
-            if codificacao:
-                codificacoes.append((passageiro, codificacao[0]))
-        return codificacoes
-    except Exception as e:
-        print(f"Erro ao obter codificações de faces: {e}")
-        return []
-
-#Endpoints do flask para conexão com o front
-
+# Endpoints para a API
 @app.route('/register_passenger', methods=['POST'])
 def register_passenger():
     data = request.get_json()
@@ -118,50 +66,31 @@ def register_passenger():
     cpf = data.get('cpf')
     gratuidade = data.get('gratuidade')
     data_nascimento = data.get('data_nascimento')
-    caminho_foto = data.get('caminho_foto')
+    foto_base64 = data.get('foto_base64')  # Recebe a imagem diretamente em base64
 
-    novo_passageiro = Passageiro(nome, cpf, gratuidade, data_nascimento)
-    result = novo_passageiro.cadastrarPassageiro(caminho_foto)
+    # Verifica se todos os campos obrigatórios estão presentes
+    if not all([nome, cpf, data_nascimento, foto_base64]):
+        return jsonify({"msg": "Todos os campos devem ser preenchidos"}), 400
+
+    novo_passageiro = Passageiro(nome, cpf, gratuidade, data_nascimento, foto_base64)
+    result = novo_passageiro.cadastrarPassageiro()
     if result:
         return jsonify({"msg": "Passageiro cadastrado com sucesso", "id": result}), 201
     else:
         return jsonify({"msg": "Erro ao cadastrar passageiro"}), 400
-    
-@app.route('/get_passenger/<string:cpf>', methods=['GET'])
+
+@app.route('/get_passenger/<string:cpf>', methods=['POST'])
 def get_passenger(cpf):
     passageiro = Passageiro.buscarPassageiro(cpf)
     if passageiro:
         return jsonify(dumps(passageiro)), 200
     else:
-        return jsonify({"msg": "Passageiro não encontrado"}),404
+        return jsonify({"msg": "Passageiro não encontrado"}), 404
 
-@app.route('/update_passenger/<string:cpf>', methods=['PUT'])
-def update_passenger(cpf):
-    novos_dados = request.get_json()
-    atualizado = Passageiro.atualizarPassageiro(cpf, novos_dados)
-    if atualizado:
-        return jsonify({"msg": "Passageiro atualizado com sucesso"}), 200
-    else:
-        return jsonify({"msg": "Erro ao atualizar passageiro"}), 400
-    
-@app.route('/delete_passenger/<string:cpf>', methods=['DELETE'])
-def delete_passenger(cpf):
-    deletado = Passageiro.deletarPassageiro(cpf)
-    if deletado:
-        return jsonify({"msg": "Passageiro deletado com sucesso"}), 200
-    else:
-        return jsonify({"msg": "Erro ao deletar passageiro"}), 400
-    
-@app.route('/get_photo/<string:cpf>', methods=['GET'])
-def get_photo(cpf):
-    passageiro = Passageiro.buscarPassageiro(cpf)
-    if passageiro and 'foto_id' in passageiro:
-        foto_id = passageiro['foto_id']
-        try:
-            foto_binaria = fs.get(foto_id).read()
-            return send_file(io.BytesIO(foto_binaria), mimetype='image/jpeg')
-        except Exception as e:
-            print(f"Erro ao obter foto: {e}")
-            return jsonify({"msg": "Erro ao obter foto"}), 500
+@app.route('/get_passenger_photo/<string:cpf>', methods=['POST'])
+def get_passenger_photo(cpf):
+    foto_base64 = Passageiro.obterFotoBase64(cpf)
+    if foto_base64:
+        return jsonify({"foto_base64": foto_base64}), 200
     else:
         return jsonify({"msg": "Foto não encontrada para o passageiro"}), 404
