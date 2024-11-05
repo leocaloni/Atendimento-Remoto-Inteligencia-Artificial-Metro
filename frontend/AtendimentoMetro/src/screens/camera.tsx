@@ -1,11 +1,15 @@
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CameraView, CameraType, useCameraPermissions, FlashMode, CameraCapturedPicture,} from 'expo-camera';
+import {  useState, useRef, useEffect  } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 
-export default function App() {
+export default function Camera() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
-
+  const [flash, setFlash] = useState<FlashMode>('on');
+  const [capturedPhoto, setCapturedPhoto] = useState<CameraCapturedPicture | null>(null);
+  //const [picture, takePictureAsync] = useState()
+  const camRef = useRef<CameraView | null>(null);
+  
   if (!permission) {
     // Camera permissions are still loading.
     return <View />;
@@ -25,15 +29,43 @@ export default function App() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
+  function toggleFlashMode() {
+    setFlash((current) => {
+      if (current === 'on') return 'off';
+      if (current === 'off') return 'auto';
+      return 'on';
+    });
+  }
+
+  
+  async function takePicture(){
+    const foto = await camRef.current?.takePictureAsync({base64:true});
+    if (foto) {
+      setCapturedPhoto(foto);
+    }
+  }
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
+      <CameraView style={styles.camera} flash={flash} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleFlashMode}>
+            <Text style={styles.text}>ligar flash</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => takePicture()}>
+            <Text style={styles.text}>Take Picture</Text>
+          </TouchableOpacity>
+        </View>
       </CameraView>
+      {capturedPhoto && (
+        <Image source={ capturedPhoto } style={styles.capturedImage} />
+      )}
     </View>
   );
 }
@@ -65,5 +97,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
+  },
+  capturedImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });
