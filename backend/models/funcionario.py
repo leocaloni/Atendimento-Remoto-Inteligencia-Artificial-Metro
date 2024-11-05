@@ -13,17 +13,17 @@ funcionario_collection = db_connection.get_collection("funcionarioTesteCollectio
 
 class Funcionario:
     
-    def __init__(self, usuario, email, senha):
-        self.usuario = usuario
-        self.email = email
+    def __init__(self, nome, funcional, senha):
+        self.nome = nome
+        self.funcional = funcional
         self.senha = senha
 
     def cadastrarFuncionario(self):
         try:
             hashed_senha = hashpw(self.senha.encode('utf-8'), gensalt())
             funcionario_id = funcionario_collection.insert_one({
-                "usuario": self.usuario,
-                "email": self.email,
+                "nome": self.nome,
+                "funcional": self.funcional,
                 "senha": hashed_senha
             }).inserted_id
 
@@ -35,19 +35,19 @@ class Funcionario:
             return None
 
     @staticmethod
-    def buscarFuncionario(usuario):
+    def buscarFuncionario(funcional):
         try:
-            funcionario = funcionario_collection.find_one({"usuario": usuario})
+            funcionario = funcionario_collection.find_one({"funcional": funcional})
             return funcionario if funcionario else None
         except Exception as e:
             print(f"Erro ao buscar funcionário: {e}")
             return None
         
     @staticmethod
-    def atualizarFuncioanrio(usuario, novos_dados):
+    def atualizarFuncioanrio(funcional, novos_dados):
         try:
             resultado = funcionario_collection.update_one(
-                {"usuario": usuario},
+                {"funcional": funcional},
                 {"$set": novos_dados}
             )
             print(f"Os dados foram atualizados")
@@ -57,9 +57,9 @@ class Funcionario:
             return False
         
     @staticmethod
-    def deletarFuncionario(usuario):
+    def deletarFuncionario(funcional):
         try:
-            resultado = funcionario_collection.delete_one({"usuario": usuario})
+            resultado = funcionario_collection.delete_one({"funcional": funcional})
             print("Funcionario deletado")
             return resultado.deleted_count > 0
         except Exception as e:
@@ -67,9 +67,9 @@ class Funcionario:
             return False
         
     @staticmethod
-    def logarFuncionario(usuario, senha):
+    def logarFuncionario(funcional, senha):
         try:
-            funcionario = funcionario_collection.find_one({"usuario": usuario})
+            funcionario = funcionario_collection.find_one({"funcional": funcional})
             if funcionario and checkpw(senha.encode('utf-8'), funcionario['senha']):
                 return True
             return False
@@ -79,15 +79,13 @@ class Funcionario:
         
 
 #Endpoints do flask para conexão com o front
-
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    usuario = data.get('usuario')
-    email = data.get('email')
+    funcional = data.get('funcional')
     senha = data.get('senha')
 
-    novo_funcionario = Funcionario(usuario, email, senha)
+    novo_funcionario = Funcionario(funcional, senha)
     result = novo_funcionario.cadastrarFuncionario()
     if result:
         return jsonify({"msg": "Funcionário registrado com sucesso", "id": result}), 201
@@ -97,35 +95,35 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    usuario = data.get('usuario')
+    funcional = data.get('funcional')
     senha = data.get('senha')
 
-    autenticado = Funcionario.logarFuncionario(usuario, senha)
+    autenticado = Funcionario.logarFuncionario(funcional, senha)
     if autenticado:
         return jsonify({"msg": "Funcionário autenticado com sucesso"}), 200
     else:
         return jsonify({"msg": "Erro ao autenticar funcionário"}), 401
     
-@app.route('/get_user/<string:usuario>', methods=['GET'])
-def get_user(usuario):
-    funcionario = Funcionario.buscarFuncionario(usuario)
+@app.route('/get_user/<string:funcional>', methods=['POST'])
+def get_func(funcional):
+    funcionario = Funcionario.buscarFuncionario(funcional)
     if funcionario:
         return jsonify(dumps(funcionario)), 200
     else:
         return jsonify({"msg": "Funcionário não encontrado"}), 404
     
-@app.route('/update_user/<string:usuario>', methods=['PUT'])
-def update_user(usuario):
+@app.route('/update_user/<string:funcional>', methods=['PUT'])
+def update_func(funcional):
     novos_dados = request.get_json()
-    atualizado = Funcionario.atualizarFuncionario(usuario, novos_dados)
+    atualizado = Funcionario.atualizarFuncionario(funcional, novos_dados)
     if atualizado:
         return jsonify({"msg": "Dados atualizados com sucesso"}), 200
     else:
         return jsonify({"msg": "Erro ao atualizar dados"}), 400
 
-@app.route('/delete_user/<string:usuario>', methods=['DELETE'])
-def delete_user(usuario):
-    deletado = Funcionario.deletarFuncionario(usuario)
+@app.route('/delete_user/<string:funcional>', methods=['DELETE'])
+def delete_func(funcional):
+    deletado = Funcionario.deletarFuncionario(funcional)
     if(deletado):
         return jsonify({"msg": "Funcionário deletado com sucesso"}), 200
     else:

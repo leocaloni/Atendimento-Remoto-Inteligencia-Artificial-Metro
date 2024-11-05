@@ -37,13 +37,13 @@ video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 counter = 0
 face_match = False
 nome_passageiro = None
-imagem_passageiro = None  # Imagem da pessoa autenticada ou de erro
+imagem_passageiro = None 
 
 # Carregar todas as imagens de referência do banco
 fotos_base64 = buscar_fotos_do_banco()
 imagens_referencia = [(base64_para_imagem(foto["foto_base64"]), foto["nome"]) for foto in fotos_base64]
 
-# Imagem de erro
+
 imagem_erro = cv2.imread("./backend/images/erro.png")
 
 # Inicializar o classificador de rosto do OpenCV
@@ -58,14 +58,14 @@ def check_face(frame):
             if result['verified']:
                 face_match = True
                 nome_passageiro = nome
-                imagem_passageiro = reference_img  # Armazena a imagem do passageiro autenticado
+                imagem_passageiro = reference_img 
                 return
-        # Se nenhuma correspondência for encontrada
+        # Rosto não identificado
         face_match = False
         nome_passageiro = None
-        imagem_passageiro = imagem_erro  # Mostra a imagem de erro
+        imagem_passageiro = imagem_erro 
     except Exception as e:
-        print(f"Erro na verificação de rosto: {e}")
+        print(f"Erro ao verificar o rosto: {e}")
         face_match = False
         imagem_passageiro = imagem_erro
 
@@ -73,16 +73,13 @@ while True:
     ret, frame = video_capture.read()
 
     if ret:
-        # Redimensiona o frame para corresponder à resolução desejada
         frame = cv2.resize(frame, (640, 480))
         
         # Detecta rostos no frame
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-        
-        # Desenha retângulos ao redor dos rostos detectados
         for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
         
         # Realiza a verificação a cada 30 frames
         if counter % 30 == 0:
@@ -92,29 +89,43 @@ while True:
                 print(f"Erro ao iniciar a thread: {e}")
         counter += 1
 
-        # Exibe a mensagem de autenticação e a imagem no canto inferior esquerdo
+        # Interface 
         overlay = frame.copy()
+        overlay_height = 100
+        overlay_padding = 20
         if face_match:
-            # Fundo verde com texto "Autenticado" e o nome do passageiro
-            cv2.rectangle(overlay, (0, frame.shape[0] - 50), (frame.shape[1], frame.shape[0]), (0, 255, 0), -1)
+            fundo_cor = (175, 39, 16) 
             texto = f"Autenticado: {unidecode.unidecode(nome_passageiro)}"
         else:
-            # Fundo vermelho com texto "Rosto não reconhecido"
-            cv2.rectangle(overlay, (0, frame.shape[0] - 50), (frame.shape[1], frame.shape[0]), (0, 0, 255), -1)
-            texto = "Rosto nao reconhecido"
+            fundo_cor = (0, 0, 255) 
+            texto = unidecode.unidecode("Rosto desconhecido")
+            cv2.imwrite('./backend/rostosDesconhecidos/rostoDesconhecido.jpg', frame)
 
-        # Adiciona o overlay com transparência no fundo
-        alpha = 0.6
-        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
-        
-        # Adiciona o texto com opacidade total
-        cv2.putText(frame, texto, (60, frame.shape[0] - 15),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        gradient = np.zeros((overlay_height, frame.shape[1], 3), dtype=np.uint8)
+        for i in range(overlay_height):
+            alpha = 1 - ((i / overlay_height) ** 5) 
+            alpha = max(alpha, 0) 
+            gradient[overlay_height - i - 1, :, :] = np.array(fundo_cor) * alpha
 
-        # Adiciona a imagem da pessoa autenticada ou de erro no canto inferior esquerdo
+
+
+        frame[-overlay_height:, :] = cv2.addWeighted(frame[-overlay_height:, :], 1, gradient, 0.7, 0)
+
+        text_size = cv2.getTextSize(texto, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+        text_x = 60 + overlay_padding + 20
+        text_y = frame.shape[0] - (overlay_height // 2) + (text_size[1] // 2)
+        cv2.putText(frame, texto, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
         if imagem_passageiro is not None:
-            img_mini = cv2.resize(imagem_passageiro, (50, 50))
-            frame[frame.shape[0] - 50:frame.shape[0], 0:50] = img_mini
+            if face_match:
+                img_width = 50
+                img_height = int(img_width * (16 / 9))
+            else:
+                img_width = img_height = 50
+            img_mini = cv2.resize(imagem_passageiro, (img_width, img_height))
+            img_x = overlay_padding
+            img_y = frame.shape[0] - overlay_height + ((overlay_height - img_height) // 2)
+            frame[img_y:img_y + img_height, img_x:img_x + img_width] = img_mini
 
         # Exibe o frame
         cv2.imshow("video", frame)

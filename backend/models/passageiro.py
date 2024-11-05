@@ -42,21 +42,23 @@ class Passageiro:
     def buscarPassageiro(cpf):
         try:
             passageiro = passageiro_collection.find_one({"cpf": cpf})
+            if passageiro:
+                passageiro.pop("foto_base64", None)
             return passageiro if passageiro else None
         except Exception as e:
             print(f"Erro ao buscar passageiro: {e}")
             return None
 
-    @staticmethod
-    def obterFotoBase64(cpf):
-        try:
-            passageiro = passageiro_collection.find_one({"cpf": cpf})
-            if passageiro and 'foto_base64' in passageiro:
-                return passageiro['foto_base64']
-            return None
-        except Exception as e:
-            print(f"Erro ao obter foto: {e}")
-            return None
+        @staticmethod
+        def obterFotoBase64(cpf):
+            try:
+                passageiro = passageiro_collection.find_one({"cpf": cpf})
+                if passageiro and 'foto_base64' in passageiro:
+                    return passageiro['foto_base64']
+                return None
+            except Exception as e:
+                print(f"Erro ao obter foto: {e}")
+                return None
 
 # Endpoints para a API
 @app.route('/register_passenger', methods=['POST'])
