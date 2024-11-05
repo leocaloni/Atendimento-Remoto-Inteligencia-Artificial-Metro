@@ -1,6 +1,8 @@
 import { CameraView, CameraType, useCameraPermissions, FlashMode, CameraCapturedPicture,} from 'expo-camera';
 import {  useState, useRef, useEffect  } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import axios from 'axios';
+
 
 export default function Camera() {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -9,6 +11,7 @@ export default function Camera() {
   const [capturedPhoto, setCapturedPhoto] = useState<CameraCapturedPicture | null>(null);
   //const [picture, takePictureAsync] = useState()
   const camRef = useRef<CameraView | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   if (!permission) {
     // Camera permissions are still loading.
@@ -42,8 +45,14 @@ export default function Camera() {
     const foto = await camRef.current?.takePictureAsync({base64:true});
     if (foto) {
       setCapturedPhoto(foto);
+      await sendString(foto);
     }
   }
+
+  async function sendString(foto: CameraCapturedPicture) {
+    setIsLoading(true);
+  }
+
   return (
     <View style={styles.container}>
       <CameraView style={styles.camera} flash={flash} facing={facing}>
