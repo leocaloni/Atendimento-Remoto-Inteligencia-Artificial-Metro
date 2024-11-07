@@ -5,23 +5,7 @@ import base64
 import numpy as np
 from pymongo import MongoClient
 import unidecode
-
-# Conexão com o MongoDB
-connection_string = "mongodb://localhost:27017"
-client = MongoClient(connection_string)
-db_connection = client["testeBanco"]
-passageiro_collection = db_connection.get_collection("testeCollection")
-
-# Busca fotos no banco
-def buscar_fotos_do_banco():
-    try:
-        passageiros = passageiro_collection.find({}, {"nome": 1, "foto_base64": 1})
-        fotos_base64 = [{"nome": passageiro["nome"], "foto_base64": passageiro["foto_base64"]} 
-                        for passageiro in passageiros if "foto_base64" in passageiro]
-        return fotos_base64
-    except Exception as e:
-        print(f"Erro ao buscar fotos do banco: {e}")
-        return []
+from db import get_passageiro_collection, get_passenger_photos
 
 # Função para converter base64 para uma imagem OpenCV
 def base64_para_imagem(base64_string):
@@ -40,7 +24,7 @@ nome_passageiro = None
 imagem_passageiro = None 
 
 # Carregar todas as imagens de referência do banco
-fotos_base64 = buscar_fotos_do_banco()
+fotos_base64 = get_passenger_photos()
 imagens_referencia = [(base64_para_imagem(foto["foto_base64"]), foto["nome"]) for foto in fotos_base64]
 
 
