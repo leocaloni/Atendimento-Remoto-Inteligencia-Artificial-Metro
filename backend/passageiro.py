@@ -35,7 +35,6 @@ class Passageiro:
             passageiro = passageiro_collection.find_one({"cpf": cpf})
             if passageiro:
                 passageiro["_id"] = str(passageiro["_id"])
-                passageiro.pop("foto_base64", None)  # Remove a foto_base64 se não precisar dela
             return passageiro if passageiro else None
         except Exception as e:
             print(f"Erro ao buscar passageiro: {e}")
