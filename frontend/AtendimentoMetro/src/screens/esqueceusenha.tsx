@@ -15,21 +15,17 @@ type RootStackParamList = {
     EsqueceuSenha: undefined;
 };
 
-type LoginScreenNavigationProp = StackNavigationProp<
+type EsqueceuSenhaScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
-    'Login'
+    'EsqueceuSenha'
 >;
 
 interface LoginProps {
-    navigation: LoginScreenNavigationProp;
+    navigation: EsqueceuSenhaScreenNavigationProp;
 }
 
 export default function Login({navigation}:LoginProps) {
-    const [usuario, setUsuario] = useState("");
-    const [senha, setSenha] = useState("");
-    const toggleShowSenha = () => {
-        setShowSenha(!showSenha);
-    };
+    const [email, setEmail] = useState("");
     const screenHeight = Dimensions.get('window').height;
     const [showSenha, setShowSenha] = useState(false);
 
@@ -51,37 +47,23 @@ export default function Login({navigation}:LoginProps) {
                 </View>
                 <View style={style.background}>
                     <View style={style.container}>
-                        <Text style={style.textoLogin}>
-                            Login
+                        <View style={{flex:1}}>
+                        <Text style={[style.textoRedefinirSenha, {top:20}]}>
+                            Redefinir Senha
                         </Text>
+                        </View>
+                        <View style={{flex:1, alignContent:'center',bottom:20}}>
                         <TextInput 
-                            style={style.input}
-                            label="Usuário"
-                            value={usuario}
-                            onChangeText={text => setUsuario(text)}
+                            style={[style.input, {bottom: 25}]}
+                            label="e-mail"
+                            value={email}
+                            onChangeText={text => setEmail(text)}
                             
                         />
-                        <TextInput 
-                            style={style.input}
-                            label="Senha"
-                            secureTextEntry={!showSenha}
-                            value={senha}
-                            onChangeText={text => setSenha(text)}
-                            right={
-                                <TextInput.Icon 
-                                    icon={showSenha ? "eye-off" : "eye"}
-                                    onPress={toggleShowSenha}
-                                />
-                            }
-                        />
-                        <TouchableOpacity>
-                            <Text style={style.esqueceuSenha} onPress={() => navigation.navigate("EsqueceuSenha")}>
-                                Esqueceu sua senha?
-                            </Text>
-                        </TouchableOpacity>
-                        <Button mode="contained" onPress={() => navigation.navigate('Cadastro')} style={style.botao}>
-                            Entrar
+                        <Button mode="contained" onPress={() => console.log("Pressed")} style={[style.botao]}>
+                            Continuar
                         </Button>
+                        </View>
                     </View>
                 </View>
             </ScrollView>

@@ -82,4 +82,12 @@ export const style = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
       },
+      textoRedefinirSenha: {
+        padding: 0,
+        //bottom: '25%',
+        fontSize: 45,
+        color: 'white',
+        fontFamily:'Helvetica-Regular',
+        marginBottom: 35
+      },
 })
