@@ -6,6 +6,7 @@ import Camera from './screens/camera'
 export type RootStackParamList = {
   Login: undefined;
   Cadastro: undefined;
+  Camera: undefined;
 };
 
 const Stack = createNativeStackNavigator();

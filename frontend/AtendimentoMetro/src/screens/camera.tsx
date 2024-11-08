@@ -1,20 +1,53 @@
 import { CameraView, CameraType, useCameraPermissions, FlashMode, CameraCapturedPicture } from 'expo-camera';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Modal } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { usePhoto } from './PhotoContext';
 
-export default function Camera() {
+
+type RootStackParamList = {
+  Login: undefined;
+  Cadastro: undefined;
+  Camera: undefined;
+};
+
+type CameraScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Camera'
+>;
+
+interface CameraProps {
+  navigation: CameraScreenNavigationProp;
+}
+
+export default function Camera({navigation}:CameraProps) {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState<FlashMode>('on');
   const [capturedPhoto, setCapturedPhoto] = useState<CameraCapturedPicture | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const camRef = useRef<CameraView | null>(null);
+  const { setCapturedPhoto: updateCapturedPhoto } = usePhoto();
+
+  useEffect(() => {
+    if (capturedPhoto) {
+      console.log("Foto capturada armazenada:", capturedPhoto);
+    } else {
+      console.log("Nenhuma foto capturada");
+    }
+  }, [capturedPhoto]);
+
+  useNavigation<StackNavigationProp<RootStackParamList, 'Camera'>>();
 
   if (!permission) {
     return <View />;
   }
 
   if (!permission.granted) {
+    
     return (
       <View style={styles.container}>
         <Text style={styles.message}>We need your permission to show the camera</Text>
@@ -36,15 +69,28 @@ export default function Camera() {
   }
 
   async function takePicture() {
+    console.log("takePicture function called");
     if (camRef.current) {
-      const photo = await camRef.current.takePictureAsync({ base64: true });
-      if (photo) {
-        setCapturedPhoto(photo);
-        setIsModalVisible(true);
+      try {
+        const photo = await camRef.current.takePictureAsync({ base64: true }); // Adiciona base64
+        console.log("Photo captured:", photo);
+  
+        if (photo && photo.uri) {
+          setCapturedPhoto(photo); // Armazena no estado local
+          updateCapturedPhoto(photo); // Atualiza no contexto global
+          setIsModalVisible(true); // Abre o modal
+        } else {
+          console.log("Erro: photo.uri não encontrado");
+        }
+      } catch (error) {
+        console.log("Erro ao capturar foto:", error);
       }
+    } else {
+      console.log("Câmera não está pronta");
     }
   }
-
+  
+  
   function closeModal() {
     setIsModalVisible(false);
     setCapturedPhoto(null);
@@ -72,22 +118,29 @@ export default function Camera() {
       </CameraView>
 
       <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {capturedPhoto && (
-              <Image source={{ uri: capturedPhoto.uri }} style={styles.capturedImage} />
-            )}
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>Sair</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+  visible={isModalVisible}
+  transparent={true}
+  animationType="slide"
+  onRequestClose={closeModal}
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      {capturedPhoto && capturedPhoto.uri ? (
+        <Image source={{ uri: capturedPhoto.uri }} style={styles.capturedImage} />
+      ) : (
+        <Text>Sem foto capturada</Text>
+      )}
+      <View style={{ flexDirection: "row", alignSelf: 'center', justifyContent: 'center' }}>
+        <TouchableOpacity style={[styles.closeButton, { right: 5 }]} onPress={closeModal}>
+          <Text style={styles.closeButtonText}>Sair</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.closeButton, { left: 5, backgroundColor: "#1027AF" }]} onPress={() => navigation.navigate('Cadastro')}>
+          <Text style={styles.closeButtonText}>Enviar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
     </View>
   );
 }

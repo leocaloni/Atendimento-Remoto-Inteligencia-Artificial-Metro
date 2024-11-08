@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { PhotoProvider } from './src/screens/PhotoContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,9 +27,11 @@ function App() {
 	}
 
   return (
+	<PhotoProvider>
     <NavigationContainer>
     <Routes/>
     </NavigationContainer>
+	</PhotoProvider>
   );
 }
 export default App;

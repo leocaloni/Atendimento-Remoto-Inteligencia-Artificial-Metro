@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, KeyboardAvoidingView, Image, TouchableOpacity, Text, Platform, ScrollView, Dimensions } from "react-native";
 import { style } from '../styles/styles';
 import { StatusBar } from 'expo-status-bar';
@@ -9,6 +9,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { usePhoto } from './PhotoContext';
 
 type RootStackParamList = {
     Login: undefined;
@@ -31,6 +32,16 @@ export default function Cadastro({navigation}:CadastroProps){
     const [nascimento, setNascimento] = useState("");
     const [gratuidade, setGratuidade] = useState("");
     const screenHeight = Dimensions.get('window').height;
+    const { capturedPhoto } = usePhoto();
+
+    useEffect(() => {
+        console.log("Cadastro screen loaded");
+        if (capturedPhoto?.base64) {
+          console.log("Imagem em Base64:", capturedPhoto.base64);
+        } else {
+          console.log("Nenhuma foto capturada.");
+        }
+      }, [capturedPhoto]);
     return (
     <SafeAreaView edges={['top']} style={{flex:1}}>
     <KeyboardAvoidingView style= {style.teste}
@@ -43,10 +54,22 @@ export default function Cadastro({navigation}:CadastroProps){
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
         >
+        <View style={style.teste1}>
         <View style = {style.teste1}>
         <Image style={[style.image, {marginBottom:10, marginTop:10}]}
                 source={require('../../assets/logo2.png')}
         />
+        </View>
+        <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+      {capturedPhoto?.base64 ? (
+            <Image
+            source={{ uri: `data:image/jpg;base64,${capturedPhoto.base64}` }}
+            style={{ width: 100, height: 100 }}
+            />
+        ) : (
+            <Text>No photo captured yet</Text>
+            )}
+        </View>
         </View>
         <View style={style.background}>
             <View style = {style.container}>
