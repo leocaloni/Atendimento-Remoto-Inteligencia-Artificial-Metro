@@ -67,7 +67,7 @@ export default function Cadastro({navigation}:CadastroProps){
             style={{ width: 100, height: 100 }}
             />
         ) : (
-            <Text>No photo captured yet</Text>
+            <Text>Nao tem foto ainda</Text>
             )}
         </View>
         </View>
@@ -80,7 +80,7 @@ export default function Cadastro({navigation}:CadastroProps){
                 </View>
                 <View style={{backgroundColor:"#1027AF", width:65,height:65, alignSelf:"flex-end", borderRadius:10, flexDirection: 'row'}}>
                 <TouchableRipple style={{width:65,height:65}}
-                    onPress={() => console.log('Pressed')}
+                    onPress={() => navigation.navigate('Login')}
                     rippleColor="rgba(0, 0, 0, .32)"
                 >
                     <Ionicons name="exit-sharp" size={24} color="white" style={{top: 20, alignSelf:"center", flex:1,}} />
