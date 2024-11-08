@@ -28,7 +28,7 @@ fotos_base64 = get_passenger_photos()
 imagens_referencia = [(base64_para_imagem(foto["foto_base64"]), foto["nome"]) for foto in fotos_base64]
 
 
-imagem_erro = cv2.imread("./backend/images/erro.png")
+imagem_erro = cv2.imread("./backend/images/erro-reconhecimento.png")
 
 # Inicializar o classificador de rosto do OpenCV
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')

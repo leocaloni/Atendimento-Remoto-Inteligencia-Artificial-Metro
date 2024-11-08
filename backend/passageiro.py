@@ -13,6 +13,10 @@ class Passageiro:
     def cadastrarPassageiro(self):
         try:
             passageiro_collection = get_passageiro_collection()
+            if passageiro_collection.find_one({"cpf": self.cpf}):
+                print("CPF já cadastrado.")
+                return None
+            
             passageiro_id = passageiro_collection.insert_one({
                 "nome": self.nome,
                 "cpf": self.cpf,
@@ -21,12 +25,13 @@ class Passageiro:
                 "foto_base64": self.foto_base64
             }).inserted_id
 
-            print(f"Passageiro cadastrado com sucesso! ID: {passageiro_id}")
+            print(f"Passageiro cadastrado com sucesso. ID: {passageiro_id}")
             return str(passageiro_id)
 
         except Exception as e:
             print(f"Erro ao cadastrar passageiro: {e}")
             return None
+
 
     @staticmethod
     def buscarPassageiro(cpf):

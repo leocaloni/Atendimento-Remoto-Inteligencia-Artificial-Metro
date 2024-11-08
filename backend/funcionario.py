@@ -11,20 +11,24 @@ class Funcionario:
 
     def cadastrarFuncionario(self):
         try:
-            hashed_senha = hashpw(self.senha.encode('utf-8'), gensalt())
             funcionario_collection = get_funcionario_collection()
+            if funcionario_collection.find_one({"funcional": self.funcional}):
+                print("Funcional já cadastrada.")
+                return None
+            
+            hashed_senha = hashpw(self.senha.encode('utf-8'), gensalt())
             funcionario_id = funcionario_collection.insert_one({
                 "nome": self.nome,
                 "funcional": self.funcional,
                 "senha": hashed_senha
             }).inserted_id
 
-            print(f"Funcionário cadastrado com sucesso! ID: {funcionario_id}")
+            print(f"Funcionário cadastrado com sucesso. ID: {funcionario_id}")
             return str(funcionario_id)
         except Exception as e:
             print(f"Erro ao cadastrar funcionário: {e}")
             return None
-        
+            
     
     @staticmethod
     def buscarFuncionario(funcional):
