@@ -42,6 +42,7 @@ export default function Cadastro({ navigation }: CadastroProps) {
   const [gratuidade, setGratuidade] = useState("");
   const screenHeight = Dimensions.get("window").height;
   const { capturedPhoto } = usePhoto();
+  const API_URL = process.env.API_URL ?? "http://localhost:5000";
 
   useEffect(() => {
     console.log("Cadastro screen loaded");
@@ -181,20 +182,17 @@ export default function Cadastro({ navigation }: CadastroProps) {
                 mode="contained"
                 onPress={async () => {
                   try {
-                    const response = await fetch(
-                      "http://localhost/register_passenger",
-                      {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          nome,
-                          cpf,
-                          data_nascimento: nascimento,
-                          gratuidade,
-                          foto_base64: capturedPhoto?.base64 || "",
-                        }),
-                      }
-                    );
+                    const response = await fetch(API_URL, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        nome,
+                        cpf,
+                        data_nascimento: nascimento,
+                        gratuidade,
+                        foto_base64: capturedPhoto?.base64 || "",
+                      }),
+                    });
 
                     const data = await response.json();
                     if (response.ok) {

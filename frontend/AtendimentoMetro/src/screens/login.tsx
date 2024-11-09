@@ -37,6 +37,7 @@ interface LoginProps {
 export default function Login({ navigation }: LoginProps) {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
+  const API_URL = process.env.API_URL ?? "http://localhost:5000";
   const toggleShowSenha = () => {
     setShowSenha(!showSenha);
   };
@@ -96,17 +97,14 @@ export default function Login({ navigation }: LoginProps) {
                 mode="contained"
                 onPress={async () => {
                   try {
-                    const response = await fetch(
-                      "http://localhost/login_func",
-                      {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          usuario,
-                          senha,
-                        }),
-                      }
-                    );
+                    const response = await fetch(API_URL, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        usuario,
+                        senha,
+                      }),
+                    });
 
                     const data = await response.json();
                     if (response.ok) {
