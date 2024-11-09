@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-from funcionario import Funcionario
-from passageiro import Passageiro
+from .funcionario import Funcionario
+from .passageiro import Passageiro
 import os
 
 app = Flask(__name__)

@@ -5,7 +5,7 @@ import base64
 import numpy as np
 from pymongo import MongoClient
 import unidecode
-from db import get_passageiro_collection, get_passenger_photos
+from .db import get_passageiro_collection, get_passenger_photos
 
 # Função para converter base64 para uma imagem OpenCV
 def base64_para_imagem(base64_string):
