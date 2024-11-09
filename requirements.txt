@@ -1,12 +1,2 @@
 flask
 gunicorn
-deepface
-cv2
-base64
-numpy
-threading
-pymongo
-unidecode
-os
-bson
-bcrypt
