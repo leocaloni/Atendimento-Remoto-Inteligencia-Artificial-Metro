@@ -34,7 +34,7 @@ interface LoginProps {
 export default function Login({ navigation }: LoginProps) {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
-  const API_URL = process.env.API_URL ?? "http://192.168.15.116:5000";
+  const API_URL = process.env.API_URL ?? "http://192.168.15.9:5000";
   const [data, setData] = useState([{}]);
   const [showSenha, setShowSenha] = useState(false);
   const [loginErro, setLoginErro] = useState(""); // Estado para mensagem de erro
@@ -58,7 +58,7 @@ export default function Login({ navigation }: LoginProps) {
       alert("Por favor, preencha ambos os campos de usuário e senha.");
       return;
     }
-  
+
     try {
       const response = await fetch(`${API_URL}/login_func`, {
         method: "POST",
@@ -68,11 +68,11 @@ export default function Login({ navigation }: LoginProps) {
           senha,
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log("Login realizado com sucesso:", data);
-  
+
         if (data.msg === "Funcionário autenticado com sucesso") {
           navigation.navigate("Cadastro");
         } else {
@@ -81,11 +81,11 @@ export default function Login({ navigation }: LoginProps) {
       } else {
         const errorData = await response.json();
         console.log("Erro na resposta do servidor:", errorData);
-  
+
         // Verifica se a mensagem de erro retornada é específica para senha incorreta
         if (errorData.msg && errorData.msg.includes("Senha incorreta")) {
           setLoginErro(errorData.msg);
-        } 
+        }
         // Verifica se a mensagem de erro é sobre o usuário não estar cadastrado
         else if (errorData.msg && errorData.msg.includes("não encontrado")) {
           setLoginErro(`Funcionário ${usuario} não está cadastrado`);
@@ -103,7 +103,6 @@ export default function Login({ navigation }: LoginProps) {
       }
     }
   };
-  
 
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
@@ -155,7 +154,9 @@ export default function Login({ navigation }: LoginProps) {
                 </Text>
               </TouchableOpacity>
               {loginErro ? (
-                <Text style={{ color: "red", marginBottom: 10 }}>{loginErro}</Text>
+                <Text style={{ color: "red", marginBottom: 10 }}>
+                  {loginErro}
+                </Text>
               ) : null}
               <Button
                 mode="contained"

@@ -14,8 +14,6 @@ import { StatusBar } from "expo-status-bar";
 import { TextInput, Button, TouchableRipple } from "react-native-paper";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { usePhoto } from "./PhotoContext";
@@ -42,16 +40,58 @@ export default function Cadastro({ navigation }: CadastroProps) {
   const [gratuidade, setGratuidade] = useState("");
   const screenHeight = Dimensions.get("window").height;
   const { capturedPhoto } = usePhoto();
-  const API_URL = process.env.API_URL ?? "http://localhost:5000";
+  const API_URL = process.env.API_URL ?? "http://192.168.15.9:5000";
 
   useEffect(() => {
     console.log("Cadastro screen loaded");
     if (capturedPhoto?.base64) {
-      console.log("Imagem em Base64:", capturedPhoto.base64);
+      console.log("Foto capturada");
     } else {
       console.log("Nenhuma foto capturada.");
     }
   }, [capturedPhoto]);
+
+  const handleCadastro = async () => {
+    try {
+      const response = await fetch(`${API_URL}/register_passenger`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          cpf,
+          data_nascimento: nascimento,
+          gratuidade,
+          foto_base64: capturedPhoto?.base64 || "",
+        }),
+      });
+
+      const contentType = response.headers.get("content-type");
+
+      // Verifica se o response é JSON antes de fazer o parse
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (response.ok) {
+          console.log("Cadastro realizado com sucesso:", data);
+          alert("Cadastro realizado com sucesso!");
+          navigation.navigate("Login");
+        } else {
+          console.log("Erro no cadastro:", data.msg);
+          alert("Erro no cadastro: " + data.msg);
+        }
+      } else {
+        // Caso a resposta não seja JSON, logue como texto para depuração
+        const text = await response.text();
+        console.log("Resposta inesperada do servidor:", text);
+        alert(
+          "Erro inesperado do servidor. Consulte o log para mais detalhes."
+        );
+      }
+    } catch (error) {
+      console.log("Erro na requisição:", error);
+      alert("Erro na requisição: " + error);
+    }
+  };
+
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -180,30 +220,7 @@ export default function Cadastro({ navigation }: CadastroProps) {
               </View>
               <Button
                 mode="contained"
-                onPress={async () => {
-                  try {
-                    const response = await fetch(API_URL, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        nome,
-                        cpf,
-                        data_nascimento: nascimento,
-                        gratuidade,
-                        foto_base64: capturedPhoto?.base64 || "",
-                      }),
-                    });
-
-                    const data = await response.json();
-                    if (response.ok) {
-                      console.log("Cadastro realizado com sucesso:", data);
-                    } else {
-                      console.log("Erro no cadastro:", data.msg);
-                    }
-                  } catch (error) {
-                    console.log("Erro na requisição:", error);
-                  }
-                }}
+                onPress={handleCadastro}
                 style={style.botao}
               >
                 Cadastrar
