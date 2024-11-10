@@ -1,5 +1,5 @@
 from bcrypt import hashpw, gensalt, checkpw
-from db import get_funcionario_collection
+from .db import get_funcionario_collection
 from bson import ObjectId
 
 class Funcionario:

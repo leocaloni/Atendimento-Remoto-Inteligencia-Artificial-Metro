@@ -1,4 +1,4 @@
-from db import get_passageiro_collection
+from .db import get_passageiro_collection
 from bson import ObjectId
 
 class Passageiro:
