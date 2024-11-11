@@ -55,7 +55,7 @@ export default function Login({ navigation }: LoginProps) {
 
   const handleLogin = async () => {
     if (!funcional || !senha) {
-      alert("Por favor, preencha ambos os campos de usuário e senha.");
+      alert("Por favor, preencha ambos os campos de funcional e senha.");
       return;
     }
 
@@ -76,7 +76,7 @@ export default function Login({ navigation }: LoginProps) {
         if (data.msg === "Funcionário autenticado com sucesso") {
           navigation.navigate("Cadastro");
         } else {
-          setLoginErro("Usuário ou senha inválidos!");
+          setLoginErro("Funcional ou senha inválidos!");
         }
       } else {
         const errorData = await response.json();
