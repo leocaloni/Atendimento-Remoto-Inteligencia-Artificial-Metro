@@ -40,7 +40,7 @@ export default function Cadastro({ navigation }: CadastroProps) {
   const [gratuidade, setGratuidade] = useState("");
   const screenHeight = Dimensions.get("window").height;
   const { capturedPhoto } = usePhoto();
-  const API_URL = process.env.API_URL ?? "http://192.168.15.116:5000";
+  const API_URL = process.env.API_URL ?? "http://192.168.15.11:5000";
 
   useEffect(() => {
     console.log("Cadastro screen loaded");
@@ -111,24 +111,6 @@ export default function Cadastro({ navigation }: CadastroProps) {
                 style={[style.image, { marginBottom: 10, marginTop: 10 }]}
                 source={require("../../assets/logo2.png")}
               />
-            </View>
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                flex: 1,
-              }}
-            >
-              {capturedPhoto?.base64 ? (
-                <Image
-                  source={{
-                    uri: `data:image/jpg;base64,${capturedPhoto.base64}`,
-                  }}
-                  style={{ width: 100, height: 100 }}
-                />
-              ) : (
-                <Text>Nao tem foto ainda</Text>
-              )}
             </View>
           </View>
           <View style={style.background}>
@@ -206,6 +188,25 @@ export default function Cadastro({ navigation }: CadastroProps) {
                   <Entypo name="camera" size={60} color="white" />
                 </TouchableRipple>
               </View>
+              <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+                padding:10
+              }}
+            >
+              {capturedPhoto?.base64 ? (
+                <Image
+                  source={{
+                    uri: `data:image/jpg;base64,${capturedPhoto.base64}`,
+                  }}
+                  style={{ width: 100, height: 150 }}
+                />
+              ) : (
+                <Text></Text>
+              )}
+            </View>
               <View style={{ width: "60%", alignSelf: "center" }}>
                 <Text
                   style={{
