@@ -26,7 +26,7 @@
     "expo-splash-screen": "~0.27.6",
     "expo-status-bar": "~1.12.1",
     "express": "^4.21.1",
-    "react": "18.2.0",
+    "react": "^18.2.0",
     "react-native": "0.74.5",
     "react-native-gesture-handler": "^2.20.2",
     "react-native-image-picker": "^7.1.2",
