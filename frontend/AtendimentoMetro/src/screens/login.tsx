@@ -32,7 +32,7 @@ interface LoginProps {
 }
 
 export default function Login({ navigation }: LoginProps) {
-  const [usuario, setUsuario] = useState("");
+  const [funcional, setFuncional] = useState("");
   const [senha, setSenha] = useState("");
   const API_URL = process.env.API_URL ?? "http://192.168.15.9:5000";
   const [data, setData] = useState([{}]);
@@ -54,7 +54,7 @@ export default function Login({ navigation }: LoginProps) {
   };
 
   const handleLogin = async () => {
-    if (!usuario || !senha) {
+    if (!funcional || !senha) {
       alert("Por favor, preencha ambos os campos de usuário e senha.");
       return;
     }
@@ -64,7 +64,7 @@ export default function Login({ navigation }: LoginProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          funcional: usuario,
+          funcional: funcional,
           senha,
         }),
       });
@@ -88,7 +88,9 @@ export default function Login({ navigation }: LoginProps) {
         }
         // Verifica se a mensagem de erro é sobre o usuário não estar cadastrado
         else if (errorData.msg && errorData.msg.includes("não encontrado")) {
-          setLoginErro(`Funcionário ${usuario} não está cadastrado`);
+          setLoginErro(
+            `Funcionário do número ${funcional} não está cadastrado`
+          );
         } else {
           setLoginErro("Erro ao comunicar com o servidor.");
         }
@@ -128,9 +130,9 @@ export default function Login({ navigation }: LoginProps) {
               <Text style={style.textoLogin}>Login</Text>
               <TextInput
                 style={style.input}
-                label="Usuário"
-                value={usuario}
-                onChangeText={(text) => setUsuario(text)}
+                label="Funcional"
+                value={funcional}
+                onChangeText={(text) => setFuncional(text)}
               />
               <TextInput
                 style={style.input}
