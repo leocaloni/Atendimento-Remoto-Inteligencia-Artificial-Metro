@@ -67,3 +67,8 @@ button {
 .button{
   color:'#1027AF'
 }
+.esqueceuSenhaTexto{
+  color: white;
+  font-size: 30px;
+  padding-right: 8%;
+}

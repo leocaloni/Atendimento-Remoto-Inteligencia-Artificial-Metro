@@ -2,9 +2,16 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import "./App.css";
-import { green } from "@material-ui/core/colors";
+import { useNavigate } from "react-router-dom";
 
-function MetroWeb() {
+function EsqueceuSenha() {
+  const navigate = useNavigate();
+
+  const irCadastro = () => {
+    console.log("Navegando para /cadastro");
+    navigate('/cadastro');
+  };
+
   return (
     <body>
       <div className="container">
@@ -14,7 +21,7 @@ function MetroWeb() {
 
         <div className="content">
           <div className="top">
-            <p className="login">Login</p>
+            <p className="esqueceuSenhaTexto">Esqueceu sua senha</p>
             <p>
               <TextField
                 className="campoTexto"
@@ -33,7 +40,7 @@ function MetroWeb() {
               <TextField
                 className="campoTexto"
                 id="filled-basic"
-                label="Senha"
+                label="Nome"
                 variant="filled"
                 sx={{
                   "& .MuiFilledInput-root:before, & .MuiFilledInput-root:after":
@@ -43,9 +50,6 @@ function MetroWeb() {
                 }}
               />
             </p>
-            <a href="#">
-              <p className="esqueceuSenha">Esqueceu sua senha</p>
-            </a>
             <Button
               variant="contained"
               className="button"
@@ -55,8 +59,9 @@ function MetroWeb() {
                   backgroundColor: "darkblue", // Define a cor ao passar o mouse
                 },
               }}
+              onClick={console.log("teste")}
             >
-              Entrar
+              Enviar
             </Button>
           </div>
         </div>
@@ -65,4 +70,4 @@ function MetroWeb() {
   );
 }
 
-export default MetroWeb;
+export default EsqueceuSenha;

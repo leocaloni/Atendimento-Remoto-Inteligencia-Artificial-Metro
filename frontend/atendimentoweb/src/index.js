@@ -1,13 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import MetroWeb from './MetroWeb';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import MetroWeb from "./login";
+import reportWebVitals from "./reportWebVitals";
+import Routes from "./routes";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <MetroWeb />
+    <Routes />
   </React.StrictMode>
 );
 
