@@ -9,7 +9,7 @@ function Login() {
 
   const irCadastro = () => {
     console.log("Navegando para /cadastro");
-    navigate('/cadastro');
+    navigate("/cadastro");
   };
 
   return (
@@ -56,12 +56,17 @@ function Login() {
             <Button
               variant="contained"
               className="button"
-              sx={{
-                backgroundColor: "#1027AF", // Define a cor de fundo
-                "&:hover": {
-                  backgroundColor: "darkblue", // Define a cor ao passar o mouse
-                },
+              style={{
+                backgroundColor: "#1027AF",
+                color: "white",
+                borderRadius: "8px",
               }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor = "darkblue")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor = "#1027AF")
+              }
               onClick={irCadastro}
             >
               Entrar

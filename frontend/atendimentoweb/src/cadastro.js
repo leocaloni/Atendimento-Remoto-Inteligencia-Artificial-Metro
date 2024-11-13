@@ -3,15 +3,13 @@ import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import Cadastro from './cadastro'
 
 function App() {
   const navigate = useNavigate();
 
-  const irCadastro = () => {
+  const irAdm = () => {
     console.log("Navegando para /cadastro");
-    navigate('/cadastro');
+    navigate("/admintela");
   };
 
   return (
@@ -83,13 +81,18 @@ function App() {
             <Button
               variant="contained"
               className="button"
-              sx={{
-                backgroundColor: "#1027AF", // Define a cor de fundo
-                "&:hover": {
-                  backgroundColor: "darkblue", // Define a cor ao passar o mouse
-                },
+              style={{
+                backgroundColor: "#1027AF",
+                color: "white",
+                borderRadius: "8px",
               }}
-              onClick={console.log("teste")}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor = "darkblue")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor = "#1027AF")
+              }
+              onClick={irAdm}
             >
               Cadastrar
             </Button>

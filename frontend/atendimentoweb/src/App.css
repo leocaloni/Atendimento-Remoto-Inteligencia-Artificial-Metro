@@ -64,11 +64,85 @@ body {
 button {
   margin-top: 20px;
 }
-.button{
-  color:'#1027AF'
+.button {
+  color: "#1027AF";
 }
-.esqueceuSenhaTexto{
+.esqueceuSenhaTexto {
   color: white;
   font-size: 30px;
   padding-right: 8%;
+}
+
+.admSis {
+  color: white;
+  font-size: 60px;
+}
+
+.botoesAdm {
+  margin-top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.top-consultaFunc {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 20px;
+}
+
+.funcSis {
+  color: white;
+  font-size: 60px;
+  text-align: center;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.buscarFuncTexto {
+  color: white;
+  font-size: 30px;
+  margin-top: -10px;
+}
+
+.center-panel {
+  align-items: center;
+  justify-content: center;
+  margin-left: 150px;
+  background-color: #1027af;
+  border-radius: 10px;
+  width: 50%;
+}
+
+.textoCentroPainel {
+  color: white;
+  padding-left: 10px;
+}
+
+.right-panel {
+  align-items: center;
+  justify-content: center;
+  padding-right: 100px;
+}
+
+.botao-opcaoFunc {
+  width: 300px;
+}
+
+.right-panel-pas {
+  align-items: center;
+  justify-content: center;
+  padding-right: 100px;
+  padding-top: 30px;
 }
