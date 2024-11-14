@@ -3,8 +3,8 @@ from flask_cors import CORS
 from funcionario import Funcionario
 from passageiro import Passageiro
 import os
-from bcrypt import checkpw  # Importação correta de checkpw
-from db import get_funcionario_collection  # Supondo que a função para acessar a coleção esteja em db.py
+from bcrypt import checkpw  
+from db import get_funcionario_collection
 
 app = Flask(__name__)
 CORS(app)
@@ -35,23 +35,23 @@ def login_func():
     funcional = data['funcional']
     senha = data['senha']
     
-    print(f"Valor de funcional recebido: {funcional}")  # Log para verificar o funcional recebido
+    print(f"Valor de funcional recebido: {funcional}")  
 
-    # Consulta o banco de dados para verificar se o funcionário existe
-    funcionario_collection = get_funcionario_collection()  # Corrigido para usar a função de acesso à coleção
+    funcionario_collection = get_funcionario_collection()  
     funcionario = funcionario_collection.find_one({"funcional": funcional})
 
-    # Verifica se o funcionário não foi encontrado
     if not funcionario:
-        print(f"Erro: Funcionário {funcional} não encontrado.")  # Log para verificar se o funcionário não foi encontrado
+        print(f"Erro: Funcionário {funcional} não encontrado.")  
         return jsonify({"msg": "Erro ao autenticar funcionário. Funcional não encontrado."}), 401
 
-    # Verifica a senha se o funcionário foi encontrado
     if checkpw(senha.encode('utf-8'), funcionario['senha']):
-        print(f"Funcionário {funcional} autenticado com sucesso.")  # Log para verificar sucesso de autenticação
-        return jsonify({"msg": "Funcionário autenticado com sucesso"}), 200
+        print(f"Funcionário {funcional} autenticado com sucesso.") 
+        return jsonify({
+            "msg": "Funcionário autenticado com sucesso",
+            "isAdmin": funcionario.get("isAdmin", False)  
+        }), 200
     else:
-        print(f"Erro: Senha incorreta para o funcionário {funcional}.")  # Log para verificar senha incorreta
+        print(f"Erro: Senha incorreta para o funcionário {funcional}.")  
         return jsonify({"msg": "Erro ao autenticar funcionário. Senha incorreta."}), 401
 
     
@@ -91,7 +91,6 @@ def register_passenger():
     data_nascimento = data.get('data_nascimento')
     foto_base64 = data.get('foto_base64') 
 
-    # Verifica se todos os campos obrigatórios estão presentes
     if not all([nome, cpf, data_nascimento, foto_base64]):
         return jsonify({"msg": "Todos os campos devem ser preenchidos"}), 400
 

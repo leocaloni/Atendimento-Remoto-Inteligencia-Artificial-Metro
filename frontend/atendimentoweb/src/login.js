@@ -3,13 +3,36 @@ import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Login() {
   const navigate = useNavigate();
+  const [funcional, setFuncional] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loginErro, setLoginErro] = useState("");
 
-  const irCadastro = () => {
-    console.log("Navegando para /cadastro");
-    navigate("/cadastro");
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://192.168.15.9:5000/login_func", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ funcional, senha }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isAdmin) {
+          navigate("/admintela");
+        } else {
+          navigate("/verificaPas");
+        }
+      } else {
+        const errorData = await response.json();
+        setLoginErro(errorData.msg || "Erro ao autenticar.");
+      }
+    } catch (error) {
+      setLoginErro("Erro ao conectar ao servidor.");
+    }
   };
 
   return (
@@ -28,6 +51,8 @@ function Login() {
                 id="filled-basic"
                 label="Funcional"
                 variant="filled"
+                value={funcional}
+                onChange={(e) => setFuncional(e.target.value)}
                 sx={{
                   "& .MuiFilledInput-root:before, & .MuiFilledInput-root:after":
                     {
@@ -41,7 +66,10 @@ function Login() {
                 className="campoTexto"
                 id="filled-basic"
                 label="Senha"
+                type="password"
                 variant="filled"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
                 sx={{
                   "& .MuiFilledInput-root:before, & .MuiFilledInput-root:after":
                     {
@@ -52,6 +80,7 @@ function Login() {
             </p>
             <a href="./esqueceusenha">
               <p className="esqueceuSenha">Esqueceu sua senha</p>
+              {loginErro && <p style={{ color: "red" }}>{loginErro}</p>}
             </a>
             <Button
               variant="contained"
@@ -67,7 +96,7 @@ function Login() {
               onMouseOut={(e) =>
                 (e.currentTarget.style.backgroundColor = "#1027AF")
               }
-              onClick={irCadastro}
+              onClick={handleLogin}
             >
               Entrar
             </Button>

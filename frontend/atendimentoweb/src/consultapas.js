@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 function App() {
   const navigate = useNavigate();
 
+  const voltaTela = () => {
+    navigate("/admintela");
+  };
+
   return (
     <body>
       <div className="container">
@@ -15,6 +19,19 @@ function App() {
         </div>
 
         <div className="content">
+          <Button
+            variant="contained"
+            className="button"
+            style={{
+              backgroundColor: "#1E4CD4",
+              color: "white",
+              borderRadius: "8px",
+              marginTop: "5px",
+            }}
+            onClick={voltaTela}
+          >
+            Voltar
+          </Button>
           <p className="funcSis">Passageiros no Sistema</p>
           <div className="top-consultaFunc">
             <div className="left-panel">

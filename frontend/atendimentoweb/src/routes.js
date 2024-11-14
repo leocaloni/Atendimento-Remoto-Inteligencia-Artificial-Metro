@@ -6,6 +6,7 @@ import EsqueceuSenha from "./esqueceusenha";
 import AdminTela from "./admintela";
 import ConsultaFunc from "./consultafunc";
 import ConsultaPas from "./consultapas";
+import VerificaPas from "./verificapassageiro";
 function routes() {
   return (
     <Router>
@@ -16,6 +17,7 @@ function routes() {
         <Route path="/admintela" element={<AdminTela />} />
         <Route path="/consultaFunc" element={<ConsultaFunc />} />
         <Route path="/consultaPas" element={<ConsultaPas />} />
+        <Route path="/verificaPas" element={<VerificaPas />} />
       </Routes>
     </Router>
   );

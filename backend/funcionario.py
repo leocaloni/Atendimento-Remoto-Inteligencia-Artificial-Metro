@@ -4,10 +4,11 @@ from bson import ObjectId
 
 class Funcionario:
     
-    def __init__(self, nome, funcional, senha):
+    def __init__(self, nome, funcional, senha, is_admin=False):
         self.nome = nome
         self.funcional = funcional
         self.senha = senha
+        self.is_admin = is_admin
 
     def cadastrarFuncionario(self):
         try:
@@ -21,7 +22,8 @@ class Funcionario:
             funcionario_id = funcionario_collection.insert_one({
                 "nome": self.nome,
                 "funcional": self.funcional,
-                "senha": hashed_senha
+                "senha": hashed_senha,
+                "isAdmin": self.is_admin
             }).inserted_id
 
             print(f"Funcionário cadastrado com sucesso. ID: {funcionario_id}")
@@ -52,7 +54,6 @@ class Funcionario:
         try:
             funcionario_collection = get_funcionario_collection()
             if 'senha' in novos_dados:
-                # Gera o hash da nova senha
                 novos_dados['senha'] = hashpw(novos_dados['senha'].encode('utf-8'), gensalt())
             resultado = funcionario_collection.update_one(
                 {"funcional": funcional},
@@ -83,24 +84,23 @@ class Funcionario:
     def logarFuncionario(funcional, senha):
             try:
                 funcionario_collection = get_funcionario_collection()
-                # Busca o funcionário com o 'funcional' informado
                 funcionario = funcionario_collection.find_one({"funcional": funcional})
 
-                # Se o funcionário não for encontrado, retorna erro de autenticação
                 if not funcionario:
                     print(f"Erro: Funcionário {funcional} não encontrado.")
                     return {"msg": "Erro ao autenticar funcionário. Funcional não encontrado."}, 401
 
-                # Verifica se a senha fornecida é válida, comparando com o hash armazenado
                 if checkpw(senha.encode('utf-8'), funcionario['senha']):
+                    is_admin = funcionario.get('isAdmin', False)  
                     print(f"Funcionário {funcional} autenticado com sucesso.")
-                    return {"msg": "Funcionário autenticado com sucesso"}, 200
+                    return {
+                        "msg": "Funcionário autenticado com sucesso",
+                        "isAdmin": is_admin 
+                    }, 200
                 else:
-                    # Caso a senha não bata com o hash no banco de dados
                     print(f"Erro: Senha incorreta para o funcionário {funcional}.")
                     return {"msg": "Erro ao autenticar funcionário. Senha incorreta."}, 401
 
             except Exception as e:
-                # Em caso de erro no servidor
                 print(f"Erro ao logar funcionário: {e}")
                 return {"msg": "Erro ao autenticar funcionário. Tente novamente mais tarde."}, 500

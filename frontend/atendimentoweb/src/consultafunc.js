@@ -3,9 +3,22 @@ import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function App() {
   const navigate = useNavigate();
+
+  const voltaTela = () => {
+    navigate("/admintela");
+  };
+
+  useEffect(() => {
+    const mensagem = localStorage.getItem("cadastroSucesso");
+    if (mensagem) {
+      alert(mensagem);
+      localStorage.removeItem("cadastroSucesso");
+    }
+  }, []);
 
   return (
     <body>
@@ -15,7 +28,21 @@ function App() {
         </div>
 
         <div className="content">
+          <Button
+            variant="contained"
+            className="button"
+            style={{
+              backgroundColor: "#1E4CD4",
+              color: "white",
+              borderRadius: "8px",
+              marginTop: "5px",
+            }}
+            onClick={voltaTela}
+          >
+            Voltar
+          </Button>
           <p className="funcSis">Funcionários no Sistema</p>
+
           <div className="top-consultaFunc">
             <div className="left-panel">
               <p className="buscarFuncTexto">Buscar Funcionário</p>
@@ -72,7 +99,7 @@ function App() {
                   onMouseOut={(e) =>
                     (e.currentTarget.style.backgroundColor = "#1027AF")
                   }
-                  onClick={() => console.log("aperto")}
+                  onClick={() => navigate("/cadastro")}
                 >
                   Cadastrar novo funcionário
                 </Button>
