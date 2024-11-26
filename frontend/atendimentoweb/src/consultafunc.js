@@ -1,15 +1,71 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 function App() {
   const navigate = useNavigate();
+  const [funcional, setFuncional] = useState("");
+  const [funcionario, setFuncionario] = useState(null);
 
   const voltaTela = () => {
     navigate("/admintela");
+  };
+
+  const buscarFuncionario = () => {
+    if (!funcional.trim()) {
+      alert("Por favor, insira a funcional do funcionário.");
+      return;
+    }
+
+    fetch(`http://localhost:5000/get_func/${funcional}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Funcionário não encontrado.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setFuncionario(data);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar funcionário:", error);
+        setFuncionario(null);
+        alert("Funcionário não encontrado.");
+      });
+  };
+
+  const excluirFuncionario = () => {
+    if (!funcionario) {
+      alert("Nenhum funcionário selecionado para exclusão.");
+      return;
+    }
+
+    const confirmar = window.confirm(
+      `Tem certeza que deseja excluir o funcionário ${funcionario.nome}?`
+    );
+
+    if (!confirmar) return;
+
+    fetch(`http://localhost:5000/delete_func/${funcional}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao excluir funcionário.");
+        }
+        return response.json();
+      })
+      .then(() => {
+        alert("Funcionário excluído com sucesso.");
+        setFuncionario(null);
+        setFuncional("");
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir funcionário:", error);
+        alert("Erro ao excluir funcionário.");
+      });
   };
 
   useEffect(() => {
@@ -32,11 +88,16 @@ function App() {
             variant="contained"
             className="button"
             style={{
-              backgroundColor: "#1E4CD4",
+              backgroundColor: "#1027AF",
               color: "white",
               borderRadius: "8px",
-              marginTop: "5px",
             }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "darkblue")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1027AF")
+            }
             onClick={voltaTela}
           >
             Voltar
@@ -51,6 +112,8 @@ function App() {
                 id="filled-basic"
                 label="Funcional"
                 variant="filled"
+                value={funcional}
+                onChange={(e) => setFuncional(e.target.value)}
                 sx={{
                   "& .MuiFilledInput-root:before, & .MuiFilledInput-root:after":
                     {
@@ -72,15 +135,19 @@ function App() {
                 onMouseOut={(e) =>
                   (e.currentTarget.style.backgroundColor = "#1027AF")
                 }
-                onClick={() => console.log("aperto")}
+                onClick={buscarFuncionario}
               >
                 Buscar
               </Button>
             </div>
 
             <div className="center-panel">
-              <p className="textoCentroPainel">Nome: </p>
-              <p className="textoCentroPainel">Funcional: </p>
+              <p className="textoCentroPainel">
+                Nome: {funcionario ? funcionario.nome : ""}
+              </p>
+              <p className="textoCentroPainel">
+                Funcional: {funcionario ? funcionario.funcional : ""}
+              </p>
             </div>
 
             <div className="right-panel">
@@ -119,7 +186,7 @@ function App() {
                   onMouseOut={(e) =>
                     (e.currentTarget.style.backgroundColor = "#1027AF")
                   }
-                  onClick={() => console.log("aperto")}
+                  onClick={excluirFuncionario}
                 >
                   Excluir funcionário atual
                 </Button>

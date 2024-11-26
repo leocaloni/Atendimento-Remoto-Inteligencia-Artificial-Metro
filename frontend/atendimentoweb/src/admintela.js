@@ -6,6 +6,10 @@ import { useNavigate } from "react-router-dom";
 function App() {
   const navigate = useNavigate();
 
+  const sair = () => {
+    navigate("/login");
+  };
+
   const irConsultaFunc = () => {
     console.log("Navegando para /cadastro");
     navigate("/consultaFunc");
@@ -23,6 +27,24 @@ function App() {
         </div>
 
         <div className="content">
+          <Button
+            variant="contained"
+            className="button"
+            style={{
+              backgroundColor: "#1027AF",
+              color: "white",
+              borderRadius: "8px",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "darkblue")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1027AF")
+            }
+            onClick={sair}
+          >
+            Sair
+          </Button>
           <div className="top">
             <p className="admSis">Admiministração do Sistema</p>
             <div className="botoesAdm">

@@ -118,6 +118,7 @@ button {
 }
 
 .center-panel {
+  margin-top: 50px;
   align-items: center;
   justify-content: center;
   margin-left: 150px;
@@ -129,6 +130,9 @@ button {
 .textoCentroPainel {
   color: white;
   padding-left: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  padding-right: 5px;
 }
 
 .right-panel {
@@ -146,4 +150,49 @@ button {
   justify-content: center;
   padding-right: 100px;
   padding-top: 30px;
+}
+
+.center-panel-pas {
+  align-items: center;
+  justify-content: center;
+  margin-left: 150px;
+}
+
+.center-panel-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  margin-left: 70px;
+}
+
+.center-panel-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #1027af;
+  border-radius: 10px;
+  width: 70%;
+}
+
+.fotoPassageiro {
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 200px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 5%;
+}
+
+.textoCentroPainel {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.campoInfo {
+  margin-right: 5px;
 }
