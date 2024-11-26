@@ -7,7 +7,7 @@ function App() {
   const navigate = useNavigate();
 
   const sair = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   const irConsultaFunc = () => {

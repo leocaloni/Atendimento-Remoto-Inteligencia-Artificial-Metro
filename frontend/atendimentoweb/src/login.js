@@ -35,8 +35,14 @@ function Login() {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   return (
-    <body>
+    <body onKeyPress={handleKeyPress}>
       <div className="container">
         <div id="imagem">
           <img src="./image.png" alt="Imagem" />

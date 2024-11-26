@@ -11,7 +11,7 @@ function routes() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/esqueceusenha" element={<EsqueceuSenha />} />
         <Route path="/admintela" element={<AdminTela />} />
