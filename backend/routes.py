@@ -135,6 +135,23 @@ def delete_passenger(cpf):
     else:
         return jsonify({"msg": "Erro ao deletar passageiro ou passageiro não encontrado"}), 404
     
+import base64
+
+@app.route('/get_unknown_face', methods=['GET'])
+def get_unknown_face():
+    try:
+        # Caminho para a imagem capturada do rosto desconhecido
+        img_path = 'rostoDesconhecido.jpg'
+        
+        # Converte a imagem para base64
+        with open(img_path, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+        
+        return jsonify({"foto_base64": img_base64}), 200
+    except Exception as e:
+        print(f"Erro ao enviar rosto desconhecido: {e}")
+        return jsonify({"msg": "Erro ao obter a imagem do rosto desconhecido"}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

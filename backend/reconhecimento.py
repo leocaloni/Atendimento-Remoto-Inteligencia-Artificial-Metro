@@ -28,7 +28,7 @@ fotos_base64 = get_passenger_photos()
 imagens_referencia = [(base64_para_imagem(foto["foto_base64"]), foto["nome"]) for foto in fotos_base64]
 
 
-imagem_erro = cv2.imread("./backend/images/erro-reconhecimento.png")
+imagem_erro = cv2.imread("./images/erro-reconhecimento.png")
 
 # Inicializar o classificador de rosto do OpenCV
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -83,7 +83,7 @@ while True:
         else:
             fundo_cor = (0, 0, 255) 
             texto = unidecode.unidecode("Rosto desconhecido")
-            cv2.imwrite('./backend/rostosDesconhecidos/rostoDesconhecido.jpg', frame)
+            cv2.imwrite('rostoDesconhecido.jpg', frame)
 
         gradient = np.zeros((overlay_height, frame.shape[1], 3), dtype=np.uint8)
         for i in range(overlay_height):

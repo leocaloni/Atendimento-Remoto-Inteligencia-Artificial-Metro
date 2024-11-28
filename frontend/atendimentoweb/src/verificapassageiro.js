@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import "./App.css";
@@ -9,6 +9,32 @@ function App() {
   const [cpf, setCpf] = useState("");
   const [passageiro, setPassageiro] = useState(null);
   const [erro, setErro] = useState("");
+  const [unknownFace, setUnknownFace] = useState(null);
+
+  const sair = () => {
+    navigate("/");
+  };
+
+  const fetchUnknownFace = () => {
+    fetch("http://localhost:5000/get_unknown_face")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao buscar rosto desconhecido.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUnknownFace(`data:image/jpeg;base64,${data.foto_base64}`);
+      })
+      .catch((error) => {
+        console.error("Erro ao carregar rosto desconhecido:", error);
+      });
+  };
+  useEffect(() => {
+    fetchUnknownFace();
+  }, []);
+
+  setInterval(fetchUnknownFace, 10000);
 
   const buscarPassageiro = () => {
     if (!cpf.trim()) {
@@ -42,9 +68,38 @@ function App() {
         </div>
 
         <div className="content-verifica">
+          <Button
+            variant="contained"
+            className="button"
+            style={{
+              backgroundColor: "#1027AF",
+              color: "white",
+              borderRadius: "8px",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "darkblue")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1027AF")
+            }
+            onClick={sair}
+          >
+            Sair
+          </Button>
           <p className="titulo-verifica">Verificação de passageiro</p>
+
           <div className="top-verifica">
-            <div className="left-panel-verifica"></div>
+            <div className="left-panel-verifica">
+              {unknownFace ? (
+                <img
+                  src={unknownFace}
+                  alt="Rosto Desconhecido"
+                  className="rosto-desconhecido"
+                />
+              ) : (
+                <p>Carregando rosto desconhecido...</p>
+              )}
+            </div>
 
             <div className="center-panel-verifica">
               <p className="buscarFuncTexto">Buscar Passageiro</p>

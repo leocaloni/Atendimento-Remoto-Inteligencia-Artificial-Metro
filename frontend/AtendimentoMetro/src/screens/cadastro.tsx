@@ -40,7 +40,7 @@ export default function Cadastro({ navigation }: CadastroProps) {
   const [gratuidade, setGratuidade] = useState("");
   const screenHeight = Dimensions.get("window").height;
   const { capturedPhoto } = usePhoto();
-  const API_URL = process.env.API_URL ?? "http://192.168.15.9:5000";
+  const API_URL = process.env.API_URL ?? "http://192.168.15.18:5000";
 
   useEffect(() => {
     console.log("Cadastro screen loaded");

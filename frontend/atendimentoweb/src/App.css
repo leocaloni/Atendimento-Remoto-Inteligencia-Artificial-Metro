@@ -272,3 +272,21 @@ button {
   font-size: 20px;
   margin-top: -30px;
 }
+
+.left-panel-verifica {
+  align-items: center;
+  justify-content: center;
+  margin-left: 40px;
+  margin-right: -40px;
+}
+
+.rosto-desconhecido {
+  align-items: center;
+  justify-content: center;
+  width: 350px;
+  height: 300px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 3%;
+}
