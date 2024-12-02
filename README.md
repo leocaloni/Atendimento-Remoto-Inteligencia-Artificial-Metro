@@ -1,75 +1,102 @@
-# Software de Autoatendimento - Metrô de São Paulo
+# App Reconhecimento Facial e Atendimento - Metrô
 
 ## Visão Geral
 
-Este projeto tem como objetivo desenvolver um sistema de autoatendimento para o Metrô de São Paulo, com foco no cadastro e gerenciamento de usuários que possuem benefícios, como idosos, utilizando tecnologias modernas e seguras. O sistema será intuitivo, automatizando processos de cadastro e controle de passageiros, oferecendo maior agilidade e segurança nas operações do metrô.
+Esse projeto realiza o cadastro de funcionários e passageiros, onde o funcionário poderá realizar seu login para cadastrar passageiros e seus rostos. A partir disso os passageiros que possuem algum tipo de gratuidade poderão economizar tempo ao passar nas catracas com reconhecimento facial e serem liberados rapidamente para pegar seu metrô.
 
 ## Objetivos
 
-- Automatizar o cadastramento de usuários, especialmente os idosos, com o auxílio de reconhecimento facial.
-- Prover uma solução segura para o armazenamento e gestão de dados pessoais.
-- Criar uma interface amigável e acessível, principalmente para os usuários com benefícios.
+- Automatizar catracas para pessoas com gratuidade.
+- Rapidez no fluxo do Metrô
+- Acabar com fraudes nas catracas com o bilhete único
 
 ## Funcionalidades Principais
 
-- **Cadastro de clientes** com reconhecimento facial.
-- **Autenticação** de usuários no momento de entrada e saída no metrô.
-- **Emissão de relatórios** sobre a utilização do benefício.
-- **Controle de acesso** para permitir a passagem dos passageiros com benefícios.
+- Cadastro de passageiros
+- Cadastro de funcionários
+- Reconhecimento facial pela câmera em tempo real
+- Administração do sistema
 
 ## Tecnologias Utilizadas
 
 - **Linguagens de Programação**: Python, React, React Native.
 - **Banco de Dados**: MongoDB.
-- **Sistema de Nuvem**: AWS (DocumentDB para banco de dados, EC2 para back-end).
-- **APIs Abertas**: Facilitar a integração com outros sistemas no futuro.
 
-## Requisitos
+## Como rodar o App
 
-### Funcionais
+Para rodar localmente você irá precisar primeiramente realizar as instalações das bibliotecas python, o seguinte comando deve instalar todas elas:
 
-- O sistema deve permitir o **cadastro de clientes** com bilhete único ou pessoas aptas a receber o benefício.
-- O sistema deve realizar a **verificação de autenticidade** para impedir fraudes.
 
-### Não Funcionais
+<p align="center">pip install bcrypt pymongo flask flask-cors deepface opencv-python-headless numpy unidecode
+</p>
 
-- O sistema deve ser capaz de liberar as catracas em **tempo real**.
-- O tempo de resposta das operações deve ser inferior a **2 segundos**.
 
-## Escopo
+Após instalar as bibliotecas do python você deve instalar as bibliotecas utilizadas no react, o seguinte comando deve instalar todas elas:
 
-### Inclui:
 
-- Desenvolvimento do sistema de cadastro e gestão de clientes com benefícios.
-- Implementação de relatórios e extratos sobre a utilização do benefício.
-- Integração com o sistema de **bilhete único**.
-  
-### Exclui:
+<p align="center">npm install react-router-dom @mui/material @emotion/react @emotion/styled
+</p>
 
-- Cadastro de usuários fora das estações específicas.
-- Integração com métodos de pagamento ou recarga de bilhetes.
+
+Por fim, é necessário instalar as bibliotecas utilizadas no react-native, o seguinte comando deve instalar todas elas:
+
+
+<p align="center">npm install react-native-paper @react-navigation/native @react-navigation/stack react-native-safe-area-context expo-camera @expo/vector-icons react-native-gesture-handler react-native-reanimated react-navigation-stack
+</p>
+
+
+Após isso nas telas login.tsx e cadastro.tsx, altere o ip da variável API_URL para seu ip.
+
+Agora para poder rodar tudo localmente, você deve criar 4 terminais, sendo eles, um para rodar o sistema de reconhecimento facial pela câmera, um para o servidor flask das requisições, um para rodar a aplicação mobile e um para rodar a aplicação web.
+
+Para rodar o reconhecimento facial, você deve ir até a pasta "backend" com o comando "cd backend", e após isso rodar o seguinte comando:
+
+
+<p align="center">
+  python reconhecimento.py
+</p>
+
+
+Para rodar o servidor flask (necessário para a conexão com o front-end), voce deve fazer o mesmo e ir até a pasta "backend" e após isso rodar o seguinte comando:
+
+<p align="center">python routes.py
+</p>
+
+Para rodar a aplicação mobile, você deve ir até a pasta "frontend" com o comando "cd frontend" e ir para a pasta "AtendimentoMetro" com o comando "cd AtendimentoMetro", e após isso rodar o seguinte comando:
+
+
+<p align="center">npx expo start
+</p>
+
+
+Por fim, para rodar a aplicação web, você deve ir novamente para a pasta "frontend" e ir para a pasta "atendimentoweb" com o comando "cd atendimentoweb", e após isso rodar o seguinte comando:
+
+
+<p align="center">npm start
+</p>
+
+
+Além das instalações você deve criar um banco de dados MongoDB local, com o nome "testeBanco", com duas collections, sendo elas "testeCollection" (coleção dos passageiros) e "funcionarioTesteCollection" (coleção dos funcionários). Elas tem esses nomes pois foram utilizadas apenas para testes, caso queira criar com outros nomes será necessário alterar também no código do arquivo "db.py".
+
+Assim você terá a aplicação inteira sendo rodada.
+
+## Funcionamento
+
+Na parte do mobile você tem apenas a opção de login, pois o funcionário é cadastrado por um admin na parte web. O admin é cadastrado como um funcionário na coleção dos funcionários, com o atributo "isAdmin" como "True". Ao realizar o login o funcionário terá que preencher as informações do passageiro e tirar uma foto dele, assim o passageiro é cadastrado na coleção dos passageiros e pode ser reconhecido ao rodar o código de reconhecimento facial.
+
+Na parte web, terá dois logins, um login onde caso o funcionário seja um admin ele será jogado para a administração do sistema, e caso seja funcionário comum será jogado para a verificação de passageiro.
+
+Na administração do sistema, o admin poderá cadastrar, consultar ou excluir funcionários, e poderá consultar ou excluir passageiros.
+
+Na verificação de passageiro, o funcionário receberá de tempos em tempos uma foto tirada da câmera de rostos que não foram reconhecidos, e caso o passageiro tenha problemas com o reconhecimento, o funcionário atenderá o passageiro e irá consultar a partir do cpf a foto no banco de dados do passageiro, caso seja a mesma pessoa ele poderá liberar a catraca para o passageiro, caso contrário ele não libera.
+
+Caso o funcionário esqueça sua senha ele pode clicar na opção de recuperar a senha, nela ele irá ser redirecionado para o e-mail, onde terá uma mensgem pré-montada, onde ele irá enviar um e-mail para o supervisou ou admin do sistema, com o motivo da troca de senha. 
 
 ## Público-Alvo
 
-- Idosos e demais usuários com benefícios que utilizam o Metrô de São Paulo.
-- Funcionários do Metrô de São Paulo envolvidos no processo de cadastro e gestão de usuários com benefícios.
+- Passageiros com algum tipo de gratuidade no metrô
+- Funcionários do metrô que irão cadastrar esses passageiros
 
-## Cronograma
-
-- **Fase 1**: Levantamento de requisitos e design (1 mês).
-- **Fase 2**: Desenvolvimento do sistema (2 meses).
-- **Fase 3**: Testes e validação (1 mês).
-- **Fase 4**: Implementação e apresentação (1 mês).
-
-## Orçamento
-
-- **Custo estimado da aparelhagem**: R$800,00 por aparelho.
-- **Banco de Dados AWS (DocumentDB)**: R$18.000,00/mês.
-- **Back-end na Nuvem (Amazon EC2)**: R$730,00/mês.
-
-## Estratégia de Desenvolvimento
-
-O desenvolvimento será conduzido usando a metodologia ágil, com **sprints de 2 semanas**. A equipe se concentrará em entregas incrementais e validações contínuas com os stakeholders.
 
 ## Equipe
 
@@ -77,12 +104,4 @@ O desenvolvimento será conduzido usando a metodologia ágil, com **sprints de 2
 - **Back-end**: Leonardo e Raphael.
 - **Banco de Dados**: Henrique.
 
-## Comunicação
 
-A comunicação da equipe será realizada por meio de **reuniões semanais no Microsoft Teams** para revisar requisitos e protótipos, garantindo a qualidade e aderência ao cronograma.
-
-## Benefícios Esperados
-
-- **Agilidade e praticidade** no uso do metrô, especialmente para idosos.
-- **Facilidade no cadastramento de usuários** com benefícios.
-- **Segurança e controle aprimorados** nas operações do metrô.
