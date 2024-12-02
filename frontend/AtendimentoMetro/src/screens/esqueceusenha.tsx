@@ -1,73 +1,121 @@
-import { useEffect, useState } from 'react';
-import { View, KeyboardAvoidingView, Image, TouchableOpacity, Text, ScrollView, Dimensions, Platform, Keyboard } from 'react-native';
-import { style } from '../styles/styles';
-import { StatusBar } from 'expo-status-bar';
-import { TextInput, Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackNavigationProp } from "@react-navigation/stack";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from "react";
+import {
+  View,
+  KeyboardAvoidingView,
+  Image,
+  Text,
+  ScrollView,
+  Platform,
+  Linking,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { style } from "../styles/styles";
+import { StatusBar } from "expo-status-bar";
+import { TextInput, Button } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-type RootStackParamList = {
-    Login: undefined;
-    Cadastro: undefined;
-    Camera: undefined;
-    EsqueceuSenha: undefined;
-};
+export default function EsqueceuSenha({ navigation }: any) {
+  const [nome, setNome] = useState("");
+  const [funcional, setFuncional] = useState("");
+  const [motivo, setMotivo] = useState("");
 
-type EsqueceuSenhaScreenNavigationProp = StackNavigationProp<
-    RootStackParamList,
-    'EsqueceuSenha'
->;
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
 
-interface LoginProps {
-    navigation: EsqueceuSenhaScreenNavigationProp;
-}
+  const enviarEmail = () => {
+    if (!nome || !funcional || !motivo) {
+      alert("Por favor, preencha todos os campos antes de continuar.");
+      return;
+    }
 
-export default function Login({navigation}:LoginProps) {
-    const [email, setEmail] = useState("");
-    const screenHeight = Dimensions.get('window').height;
-    const [showSenha, setShowSenha] = useState(false);
+    const assunto = "Recuperação de Senha";
+    const mensagem = `Funcionário: ${nome}\nFuncional: ${funcional}\nMotivo da troca: ${motivo}`;
+    const email = "pi.metro.troca.de.senha@gmail.com";
+    const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
+      assunto
+    )}&body=${encodeURIComponent(mensagem)}`;
 
-    return (
-        <SafeAreaView edges={['top']} style={{flex:1}}>
-        <KeyboardAvoidingView
-            style={style.teste}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} 
-        >
-            <StatusBar style="light" />
-            <ScrollView 
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} 
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <View style={style.teste1}>
-                    <Image style={style.image} source={require('../../assets/logo2.png')} />
-                </View>
-                <View style={style.background}>
-                    <View style={style.container}>
-                        <View style={{flex:1}}>
-                        <Text style={[style.textoRedefinirSenha, {top:20}]}>
-                            Redefinir Senha
-                        </Text>
-                        </View>
-                        <View style={{flex:1, alignContent:'center',bottom:20}}>
-                        <TextInput 
-                            style={[style.input, {bottom: 25}]}
-                            label="e-mail"
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                            
-                        />
-                        <Button mode="contained" onPress={() => console.log("Pressed")} style={[style.botao]}>
-                            Continuar
-                        </Button>
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-        </SafeAreaView>
+    Linking.openURL(mailtoURL).catch((err) =>
+      console.error("Erro ao tentar abrir o cliente de e-mail:", err)
     );
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <StatusBar style="light" />
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={style.teste1}>
+              <Image
+                style={style.image}
+                source={require("../../assets/logo2.png")}
+              />
+            </View>
+            <View style={style.background}>
+              <View style={style.container}>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={[
+                      style.textoRedefinirSenha,
+                      { marginTop: 30, top: 10 },
+                    ]}
+                  >
+                    Redefinir Senha
+                  </Text>
+                </View>
+                <View style={{ flex: 1, alignContent: "center", bottom: 20 }}>
+                  <TextInput
+                    style={[style.input, { bottom: 25 }]}
+                    label="Nome"
+                    value={nome}
+                    onChangeText={(text) => setNome(text)}
+                  />
+                  <TextInput
+                    style={[style.input, { bottom: 25 }]}
+                    label="Funcional"
+                    value={funcional}
+                    onChangeText={(text) => setFuncional(text)}
+                  />
+                  <TextInput
+                    style={[style.input, { bottom: 25 }]}
+                    label="Motivo da troca"
+                    value={motivo}
+                    onChangeText={(text) => setMotivo(text)}
+                  />
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                        marginBottom: 30,
+                        textAlign: "justify",
+                      },
+                    ]}
+                  >
+                    Um e-mail será enviado ao supervisor para a troca de senha.
+                  </Text>
+                  <Button
+                    mode="contained"
+                    onPress={enviarEmail}
+                    style={[style.botao]}
+                  >
+                    Continuar
+                  </Button>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
+  );
 }
