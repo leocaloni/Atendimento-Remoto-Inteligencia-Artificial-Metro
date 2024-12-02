@@ -97,7 +97,7 @@ function App() {
                   className="rosto-desconhecido"
                 />
               ) : (
-                <p>Carregando rosto desconhecido...</p>
+                <p></p>
               )}
             </div>
 

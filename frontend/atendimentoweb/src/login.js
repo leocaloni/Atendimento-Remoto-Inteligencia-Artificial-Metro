@@ -13,7 +13,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("localhost/login_func", {
+      const response = await fetch("http://192.168.15.20:5000/login_func", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ funcional, senha }),
