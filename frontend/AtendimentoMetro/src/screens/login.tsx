@@ -36,7 +36,7 @@ interface LoginProps {
 export default function Login({ navigation }: LoginProps) {
   const [funcional, setFuncional] = useState("");
   const [senha, setSenha] = useState("");
-  const API_URL = process.env.API_URL ?? "http://192.168.15.18:5000";
+  const API_URL = process.env.API_URL ?? "http://192.168.15.116:5000";
   const [data, setData] = useState([{}]);
   const [showSenha, setShowSenha] = useState(false);
   const [loginErro, setLoginErro] = useState(""); // Estado para mensagem de erro

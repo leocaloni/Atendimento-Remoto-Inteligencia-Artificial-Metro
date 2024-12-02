@@ -35,6 +35,26 @@ interface CadastroProps {
   navigation: CadastroScreenNavigationProp;
 }
 
+function applyMaskCPF(value: string): string {
+  const numericValue = value.replace(/\D/g, "").slice(0, 11);
+  return numericValue
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
+function applyMaskDate(value: string): string {
+  const numericValue = value.replace(/\D/g, "").slice(0, 8);
+  return numericValue
+    .replace(/(\d{2})(\d)/, "$1/$2")
+    .replace(/(\d{2})(\d{1,4})$/, "$1/$2");
+}
+
+function removeMaskCPF(value: string): string {
+  return value ? value.replace(/\D/g, "") : ""; // Remove caracteres não numéricos, ou retorna uma string vazia
+}
+
+
 export default function Cadastro({ navigation }: CadastroProps) {
   const [nome, setNome] = useState("");
   const [cpf, setCPF] = useState("");
@@ -42,7 +62,7 @@ export default function Cadastro({ navigation }: CadastroProps) {
   const [gratuidade, setGratuidade] = useState("");
   const screenHeight = Dimensions.get("window").height;
   const { capturedPhoto } = usePhoto();
-  const API_URL = process.env.API_URL ?? "http://192.168.15.18:5000";
+  const API_URL = process.env.API_URL ?? "http://192.168.15.116:5000";
 
   useEffect(() => {
     console.log("Cadastro screen loaded");
@@ -59,12 +79,13 @@ export default function Cadastro({ navigation }: CadastroProps) {
 
   const handleCadastro = async () => {
     try {
+      const cpfSemMascara = removeMaskCPF(cpf);
       const response = await fetch(`${API_URL}/register_passenger`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome,
-          cpf,
+          cpf: cpfSemMascara,
           data_nascimento: nascimento,
           gratuidade,
           foto_base64: capturedPhoto?.base64 || "",
@@ -157,13 +178,15 @@ export default function Cadastro({ navigation }: CadastroProps) {
                   style={style.input}
                   label="Data de nascimento"
                   value={nascimento}
-                  onChangeText={(text) => setNascimento(text)}
+                  onChangeText={(text) => setNascimento(applyMaskDate(text))}
+                  keyboardType="numeric"
                 />
                 <TextInput
                   style={style.input}
                   label="CPF"
                   value={cpf}
-                  onChangeText={(text) => setCPF(text)}
+                  onChangeText={(text) => setCPF(applyMaskCPF(text))}
+                  keyboardType="numeric"
                 />
                 <TextInput
                   style={style.input}
