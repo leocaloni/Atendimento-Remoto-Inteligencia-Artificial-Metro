@@ -10,7 +10,7 @@ function EsqueceuSenha() {
   const [formData, setFormData] = useState({
     funcional: "",
     nome: "",
-    motivo: "", // Novo campo para o motivo
+    motivo: "",
   });
 
   const voltaTela = () => {

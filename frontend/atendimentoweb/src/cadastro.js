@@ -61,7 +61,7 @@ function App() {
     console.log("Dados do funcionário:", novoFuncionario);
 
     try {
-      const response = await fetch("http://192.168.15.9:5000/register_func", {
+      const response = await fetch("http://localhost/register_func", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(novoFuncionario),
